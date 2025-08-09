@@ -534,9 +534,7 @@ export interface RefreshTokenResponse {
 export interface User {
     id?: string;
     username: string;
-    name?: string;
     role?: string;
-    permissions?: string[];
 }
 
 // API Error Response
