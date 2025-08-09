@@ -56,7 +56,7 @@ import type // Authentication interfaces
     // Utility types
     AgeGroup,
     Gender,
-    ApiError,
+    ApiError, AuthUser,
 } from '../model/types.ts';
 
 export class StudentManagementApiError extends Error {
@@ -460,7 +460,7 @@ export class StudentManagementApi {
         return query ? `?${query}` : '';
     }
 
-    async createUser(userData: { username: string, password: string, role: "viewer" | "teacher" | "admin" }): Promise<User> {
+    async createUser(userData: AuthUser): Promise<User> {
         return this.request<User>('/users', {
             method: 'POST',
             body: JSON.stringify(userData),
@@ -475,10 +475,10 @@ export class StudentManagementApi {
      * Register a new student
      */
     async registerStudent(studentData: CreateStudentRequest): Promise<Student> {
-        return this.request<Student>('/students', {
-            method: 'POST',
-            body: JSON.stringify(studentData),
+        const queryString = this.buildQueryString({
+            student: studentData
         });
+        return this.request<Student>(`/students${queryString}`);
     }
 
     /**

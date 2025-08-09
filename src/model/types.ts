@@ -1,6 +1,6 @@
 // types.ts
 
-export type Gender = 'male' | 'female' | 'other';
+export type Gender = 'male' | 'female';
 export type AgeGroup = '0-6' | '7-9' | '10-12' | '13-15' | 'custom';
 export type SortBy = 'name' | 'age' | 'total_points' | 'created_at';
 export type Order = 'asc' | 'desc';
@@ -535,6 +535,14 @@ export interface User {
     id?: string;
     username: string;
     role?: string;
+}
+
+export type UserRole = 'admin' | 'teacher' | 'viewer';
+
+export interface AuthUser {
+    username: string,
+    password: string,
+    role: UserRole
 }
 
 // API Error Response
