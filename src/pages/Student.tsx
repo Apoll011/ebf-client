@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from "../api/useAuth.tsx";
+import type {Student} from "../model/types.ts";
 
 const StudentInfo = () => {
     const { studentId } = useParams();
     const { api } = useAuth();
 
-    const [student, setStudent] = useState(null);
+    const [student, setStudent] = useState<Student | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showPointsModal, setShowPointsModal] = useState(false);
     const [showAdjustModal, setShowAdjustModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-    const [selectedPoints, setSelectedPoints] = useState({});
+    const [selectedPoints, setSelectedPoints] = useState<{ PRESENCE?: boolean; BOOK?: boolean; VERSICLE?: boolean; PARTICIPATION?: boolean; GUEST?: boolean; GAME?: boolean; }>({});
     const [adjustmentData, setAdjustmentData] = useState({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
-    const [notification, setNotification] = useState(null);
-    const [activeTab, setActiveTab] = useState('overview');
+    const [notification, setNotification] = useState<{message: string, type: string}>(null);
 
     const pointCategories = [
         { key: 'PRESENCE', label: 'Presença', icon: '👤', color: 'emerald', points: 10 },
@@ -39,7 +39,9 @@ const StudentInfo = () => {
     const loadStudent = async () => {
         setIsLoading(true);
         try {
+            console.log('Carregando dados do aluno...', studentId);
             const studentData = await api.getStudent(studentId);
+            console.log(studentData);
             setStudent(studentData);
         } catch (error) {
             showNotification('Erro ao carregar dados do aluno', 'error');
@@ -47,6 +49,38 @@ const StudentInfo = () => {
             setIsLoading(false);
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
+                <div className="text-center space-y-6">
+                    <div className="w-full justify-center flex">
+                        <div className="w-20 h-20 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
+
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-semibold text-slate-700 mb-2">Carregando informações</h3>
+                        <p className="text-slate-500">Aguarde um momento...</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+    }
+
+    if (!student) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                        <span className="text-2xl">⚠️</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-700">Aluno não encontrado</h3>
+                    <p className="text-slate-500">ID: {studentId}</p>
+                </div>
+            </div>
+        );
+    }
 
     const getPointsForDate = async (studentId, date) => {
         const dayPoints = student?.points?.find(p => p.date === date);
@@ -79,7 +113,7 @@ const StudentInfo = () => {
             await api.awardPoints(student.id, pointsData);
             showNotification('Pontos atualizados com sucesso!');
             setShowPointsModal(false);
-            await loadStudent();
+            await loadStudent(); //Todo Instead of loading the entire student again, we could just update the points in the state  or load the student  but on the background
         } catch (error) {
             showNotification('Erro ao salvar pontos', 'error');
         }
@@ -137,39 +171,6 @@ const StudentInfo = () => {
         return colors[color] || colors.blue;
     };
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
-                <div className="text-center space-y-6">
-                    <div className="relative">
-                        <div className="w-20 h-20 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-8 h-8 bg-blue-500 rounded-full opacity-20 animate-pulse"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 className="text-xl font-semibold text-slate-700 mb-2">Carregando informações</h3>
-                        <p className="text-slate-500">Aguarde um momento...</p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (!student) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
-                <div className="text-center space-y-4">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-2xl">⚠️</span>
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-700">Aluno não encontrado</h3>
-                    <p className="text-slate-500">ID: {studentId}</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
             {/* Header */}
@@ -198,31 +199,7 @@ const StudentInfo = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
-                {/* Tabs */}
-                <div className="flex space-x-1 bg-slate-100/60 p-1 rounded-2xl mb-8 backdrop-blur-sm">
-                    {[
-                        { id: 'overview', label: 'Visão Geral', icon: '📊' },
-                        { id: 'points', label: 'Pontos', icon: '🏆' },
-                        { id: 'contact', label: 'Contato', icon: '📞' }
-                    ].map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-6 rounded-xl transition-all duration-300 ${
-                                activeTab === tab.id
-                                    ? 'bg-white shadow-sm text-slate-800 font-medium'
-                                    : 'text-slate-600 hover:text-slate-800'
-                            }`}
-                        >
-                            <span>{tab.icon}</span>
-                            <span>{tab.label}</span>
-                        </button>
-                    ))}
-                </div>
-
-                {/* Tab Content */}
-                {activeTab === 'overview' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2 space-y-6">
                             {/* Info Cards */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -249,7 +226,6 @@ const StudentInfo = () => {
                                 </div>
                             </div>
 
-                            {/* Address */}
                             {student.address && (
                                 <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/50 shadow-sm">
                                     <div className="flex items-center space-x-3 mb-4">
@@ -259,10 +235,46 @@ const StudentInfo = () => {
                                     <p className="text-slate-700">{student.address}</p>
                                 </div>
                             )}
+
+                            <div className="space-y-6">
+                                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-slate-200/50 shadow-sm">
+                                    <div className="flex items-center space-x-4 mb-6">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                                            👨‍👩‍👧‍👦
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-slate-800">Informações do Responsável</h3>
+                                            <p className="text-slate-500">Contatos e dados familiares</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="text-sm font-medium text-slate-500 mb-1 block">Nome Completo</label>
+                                                <p className="text-lg font-semibold text-slate-800">{student.parent_name}</p>
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium text-slate-500 mb-1 block">Telefone</label>
+                                                <p className="text-lg font-semibold text-slate-800">{student.parent_phone}</p>
+                                            </div>
+                                        </div>
+
+                                        {student.notes && (
+                                            <div className="md:col-span-2">
+                                                <label className="text-sm font-medium text-slate-500 mb-2 block">Observações</label>
+                                                <div className="bg-slate-50 rounded-xl p-4">
+                                                    <p className="text-slate-700 leading-relaxed">{student.notes}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div className="space-y-6">
-                            {/* Quick Actions */}
                             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/50 shadow-sm">
                                 <h3 className="text-lg font-semibold text-slate-800 mb-4">Ações Rápidas</h3>
                                 <div className="space-y-3">
@@ -284,126 +296,8 @@ const StudentInfo = () => {
                             </div>
                         </div>
                     </div>
-                )}
-
-                {activeTab === 'points' && (
-                    <div className="space-y-6">
-                        {/* Week Calendar */}
-                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/50 shadow-sm">
-                            <h3 className="text-lg font-semibold text-slate-800 mb-6">Semana Atual</h3>
-                            <div className="grid grid-cols-7 gap-3">
-                                {getWeekDates().map((day) => {
-                                    const totalPoints = getTotalPointsForDate(day.date);
-                                    return (
-                                        <div
-                                            key={day.date}
-                                            onClick={() => setSelectedDate(day.date)}
-                                            className={`p-4 rounded-2xl cursor-pointer transition-all duration-300 text-center relative ${
-                                                selectedDate === day.date
-                                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg scale-105'
-                                                    : day.isToday
-                                                        ? 'bg-amber-50 border-2 border-amber-200 hover:bg-amber-100'
-                                                        : 'bg-slate-50 hover:bg-slate-100 border border-slate-200'
-                                            }`}
-                                        >
-                                            <div className={`text-xs mb-1 ${selectedDate === day.date ? 'text-white/80' : 'text-slate-500'}`}>
-                                                {day.dayName}
-                                            </div>
-                                            <div className="text-lg font-bold mb-1">{day.day}</div>
-                                            {totalPoints > 0 && (
-                                                <div className={`text-xs font-medium ${
-                                                    selectedDate === day.date ? 'text-white' : 'text-blue-600'
-                                                }`}>
-                                                    {totalPoints} pts
-                                                </div>
-                                            )}
-                                            {day.isToday && (
-                                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full"></div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Points Categories */}
-                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/50 shadow-sm">
-                            <h3 className="text-lg font-semibold text-slate-800 mb-6">Categorias de Pontos</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {pointCategories.map((category) => {
-                                    const dayPoints = student.points?.find(p => p.date === selectedDate);
-                                    const hasPoints = dayPoints && dayPoints[category.key];
-
-                                    return (
-                                        <div
-                                            key={category.key}
-                                            className={`p-4 rounded-2xl border transition-all duration-300 ${
-                                                hasPoints
-                                                    ? `${getColorClass(category.color)} shadow-sm`
-                                                    : 'bg-slate-50 border-slate-200 text-slate-600'
-                                            }`}
-                                        >
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-2xl">{category.icon}</span>
-                                                <div className="text-right">
-                                                    <div className="font-bold text-lg">{category.points}</div>
-                                                    <div className="text-xs opacity-70">pontos</div>
-                                                </div>
-                                            </div>
-                                            <div className="font-medium">{category.label}</div>
-                                            {hasPoints && (
-                                                <div className="mt-2 text-xs font-medium opacity-80">
-                                                    ✓ Conquistado
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'contact' && (
-                    <div className="space-y-6">
-                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-slate-200/50 shadow-sm">
-                            <div className="flex items-center space-x-4 mb-6">
-                                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
-                                    👨‍👩‍👧‍👦
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-slate-800">Informações do Responsável</h3>
-                                    <p className="text-slate-500">Contatos e dados familiares</p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="text-sm font-medium text-slate-500 mb-1 block">Nome Completo</label>
-                                        <p className="text-lg font-semibold text-slate-800">{student.parent_name}</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-sm font-medium text-slate-500 mb-1 block">Telefone</label>
-                                        <p className="text-lg font-semibold text-slate-800">{student.parent_phone}</p>
-                                    </div>
-                                </div>
-
-                                {student.notes && (
-                                    <div className="md:col-span-2">
-                                        <label className="text-sm font-medium text-slate-500 mb-2 block">Observações</label>
-                                        <div className="bg-slate-50 rounded-xl p-4">
-                                            <p className="text-slate-700 leading-relaxed">{student.notes}</p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
-            {/* Points Modal */}
             {showPointsModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
@@ -444,9 +338,7 @@ const StudentInfo = () => {
                                                 : 'border-slate-300'
                                         }`}>
                                             {selectedPoints[category.key] && (
-                                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
+                                                <svg fill="#000000" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd"></path> </g></svg>
                                             )}
                                         </div>
                                     </div>
@@ -472,7 +364,6 @@ const StudentInfo = () => {
                 </div>
             )}
 
-            {/* Adjust Points Modal */}
             {showAdjustModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full">
@@ -537,7 +428,6 @@ const StudentInfo = () => {
                 </div>
             )}
 
-            {/* Notification */}
             {notification && (
                 <div className={`fixed top-6 right-6 z-50 p-4 rounded-2xl shadow-xl border backdrop-blur-sm transition-all duration-500 transform ${
                     notification.type === 'error'
