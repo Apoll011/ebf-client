@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Users, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Printer } from 'lucide-react';
 import { useAuth } from '../api/useAuth';
 import type {AgeGroup, Gender, SortBy, StudentListItem, StudentsListQuery} from '../model/types';
+import Header from "../components/Header.tsx";
 
 const StudentListPage: React.FC = () => {
     const navigate = useNavigate();
@@ -36,7 +37,6 @@ const StudentListPage: React.FC = () => {
         fetchStudents();
     }, [filters, api]);
 
-    // Filter students by search term
     const filteredStudents = useMemo(() => {
         if (!searchTerm) return students;
         return students.filter(student =>
@@ -53,7 +53,7 @@ const StudentListPage: React.FC = () => {
             ...prev,
             [key]: value === '' ? undefined : value
         }));
-        setCurrentPage(0); // Reset to first page when filters change
+        setCurrentPage(0);
     };
 
     const handleSortChange = (sortBy: SortBy) => {
@@ -76,7 +76,6 @@ const StudentListPage: React.FC = () => {
     };
 
     const handlePrintPlanilha = () => {
-        // Handle print functionality here
         console.log('Imprimir Planilia for age group:', filters.age_group);
     };
 
@@ -102,265 +101,268 @@ const StudentListPage: React.FC = () => {
     const currentStudents = filteredStudents.slice(startIndex, endIndex);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                    <div className="p-6">
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            {/* Search */}
-                            <div className="flex-1 relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Procurar estudantes..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
-                                />
+        <>
+            <Header currentPath="/list" />
+            <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+                        <div className="p-6">
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                {/* Search */}
+                                <div className="flex-1 relative">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Procurar estudantes..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
+                                    />
+                                </div>
+
+                                {/* Filter Toggle */}
+                                <button
+                                    onClick={() => setShowFilters(!showFilters)}
+                                    className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                >
+                                    <Filter className="h-4 w-4" />
+                                    <span>Filtros</span>
+                                    <ChevronDown className={`h-4 w-4 transform transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {/* Print Button - Only show if age_group is selected */}
+                                {filters.age_group && (
+                                    <button
+                                        onClick={handlePrintPlanilha}
+                                        className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                                    >
+                                        <Printer className="h-4 w-4" />
+                                        <span>Imprimir Planilha</span>
+                                    </button>
+                                )}
                             </div>
 
-                            {/* Filter Toggle */}
-                            <button
-                                onClick={() => setShowFilters(!showFilters)}
-                                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                            >
-                                <Filter className="h-4 w-4" />
-                                <span>Filtros</span>
-                                <ChevronDown className={`h-4 w-4 transform transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-                            </button>
+                            {/* Filters */}
+                            {showFilters && (
+                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        {/* Age Group Filter */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Grupo Etário
+                                            </label>
+                                            <select
+                                                value={filters.age_group || ''}
+                                                onChange={(e) => handleFilterChange('age_group', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
+                                            >
+                                                <option value="">Todos os grupos</option>
+                                                <option value="0-6">0-6 anos</option>
+                                                <option value="7-9">7-9 anos</option>
+                                                <option value="10-12">10-12 anos</option>
+                                                <option value="13-15">13-15 anos</option>
+                                                <option value="custom">Personalizado</option>
+                                            </select>
+                                        </div>
 
-                            {/* Print Button - Only show if age_group is selected */}
-                            {filters.age_group && (
-                                <button
-                                    onClick={handlePrintPlanilha}
-                                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm"
-                                >
-                                    <Printer className="h-4 w-4" />
-                                    <span>Imprimir Planilha</span>
-                                </button>
+                                        {/* Gender Filter */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Gênero
+                                            </label>
+                                            <select
+                                                value={filters.gender || ''}
+                                                onChange={(e) => handleFilterChange('gender', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
+                                            >
+                                                <option value="">Todos os gêneros</option>
+                                                <option value="male">Masculino</option>
+                                                <option value="female">Feminino</option>
+                                            </select>
+                                        </div>
+
+                                        {/* Min Age Filter */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Idade Mínima
+                                            </label>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max="18"
+                                                value={filters.min_age || ''}
+                                                onChange={(e) => handleFilterChange('min_age', parseInt(e.target.value) || undefined)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
+                                                placeholder="Ex: 10"
+                                            />
+                                        </div>
+
+                                        {/* Max Age Filter */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Idade Máxima
+                                            </label>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max="18"
+                                                value={filters.max_age || ''}
+                                                onChange={(e) => handleFilterChange('max_age', parseInt(e.target.value) || undefined)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
+                                                placeholder="Ex: 15"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Clear Filters */}
+                                    <div className="mt-4 flex justify-end">
+                                        <button
+                                            onClick={clearFilters}
+                                            className="text-sm text-gray-600 hover:text-gray-900 underline"
+                                        >
+                                            Limpar filtros
+                                        </button>
+                                    </div>
+                                </div>
                             )}
                         </div>
-
-                        {/* Filters */}
-                        {showFilters && (
-                            <div className="mt-4 pt-4 border-t border-gray-200">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    {/* Age Group Filter */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Grupo Etário
-                                        </label>
-                                        <select
-                                            value={filters.age_group || ''}
-                                            onChange={(e) => handleFilterChange('age_group', e.target.value)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
-                                        >
-                                            <option value="">Todos os grupos</option>
-                                            <option value="0-6">0-6 anos</option>
-                                            <option value="7-9">7-9 anos</option>
-                                            <option value="10-12">10-12 anos</option>
-                                            <option value="13-15">13-15 anos</option>
-                                            <option value="custom">Personalizado</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Gender Filter */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Gênero
-                                        </label>
-                                        <select
-                                            value={filters.gender || ''}
-                                            onChange={(e) => handleFilterChange('gender', e.target.value)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
-                                        >
-                                            <option value="">Todos os gêneros</option>
-                                            <option value="male">Masculino</option>
-                                            <option value="female">Feminino</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Min Age Filter */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Idade Mínima
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="18"
-                                            value={filters.min_age || ''}
-                                            onChange={(e) => handleFilterChange('min_age', parseInt(e.target.value) || undefined)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
-                                            placeholder="Ex: 10"
-                                        />
-                                    </div>
-
-                                    {/* Max Age Filter */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Idade Máxima
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="18"
-                                            value={filters.max_age || ''}
-                                            onChange={(e) => handleFilterChange('max_age', parseInt(e.target.value) || undefined)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
-                                            placeholder="Ex: 15"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Clear Filters */}
-                                <div className="mt-4 flex justify-end">
-                                    <button
-                                        onClick={clearFilters}
-                                        className="text-sm text-gray-600 hover:text-gray-900 underline"
-                                    >
-                                        Limpar filtros
-                                    </button>
-                                </div>
-                            </div>
-                        )}
                     </div>
-                </div>
 
-                { loading && (
-                    <div className="mt-20 bg-gray-50 flex items-center justify-center">
-                        <div className="flex flex-col items-center space-y-4">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
-                            <p className="text-gray-600">Carregando estudantes...</p>
-                        </div>
-                    </div>
-                )}
-                { !loading && (
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                        {/* Table Header */}
-                        <div className="px-6 py-4 border-b border-gray-200">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-lg font-medium text-gray-900">
-                                    Lista de Estudantes ({totalStudents} total)
-                                </h2>
-                                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span>Ordenar por:</span>
-                                    <button
-                                        onClick={() => handleSortChange('name')}
-                                        className={`flex items-center space-x-1 hover:text-gray-900 ${
-                                            filters.sort_by === 'name' ? 'text-gray-900 font-medium' : ''
-                                        }`}
-                                    >
-                                        <span>Nome</span>
-                                        {filters.sort_by === 'name' && (
-                                            <ArrowUpDown className="h-3 w-3" />
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => handleSortChange('age')}
-                                        className={`flex items-center space-x-1 hover:text-gray-900 ${
-                                            filters.sort_by === 'age' ? 'text-gray-900 font-medium' : ''
-                                        }`}
-                                    >
-                                        <span>Idade</span>
-                                        {filters.sort_by === 'age' && (
-                                            <ArrowUpDown className="h-3 w-3" />
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => handleSortChange('total_points')}
-                                        className={`flex items-center space-x-1 hover:text-gray-900 ${
-                                            filters.sort_by === 'total_points' ? 'text-gray-900 font-medium' : ''
-                                        }`}
-                                    >
-                                        <span>Pontos</span>
-                                        {filters.sort_by === 'total_points' && (
-                                            <ArrowUpDown className="h-3 w-3" />
-                                        )}
-                                    </button>
-                                </div>
+                    { loading && (
+                        <div className="mt-20 bg-gray-50 flex items-center justify-center">
+                            <div className="flex flex-col items-center space-y-4">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
+                                <p className="text-gray-600">Carregando estudantes...</p>
                             </div>
                         </div>
-
-                        {/* Students Grid */}
-                        <div className="p-6">
-                            {currentStudents.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <Users className="mx-auto h-12 w-12 text-gray-400" />
-                                    <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhum estudante encontrado</h3>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        Tente ajustar os filtros ou termo de busca.
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                                    {currentStudents.map((student) => (
-                                        <div
-                                            key={student.id}
-                                            onClick={() => handleStudentClick(student.id)}
-                                            className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-md transition-all cursor-pointer bg-white"
+                    )}
+                    { !loading && (
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                            {/* Table Header */}
+                            <div className="px-6 py-4 border-b border-gray-200">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-lg font-medium text-gray-900">
+                                        Lista de Estudantes ({totalStudents} total)
+                                    </h2>
+                                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                        <span>Ordenar por:</span>
+                                        <button
+                                            onClick={() => handleSortChange('name')}
+                                            className={`flex items-center space-x-1 hover:text-gray-900 ${
+                                                filters.sort_by === 'name' ? 'text-gray-900 font-medium' : ''
+                                            }`}
                                         >
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className="text-sm font-medium text-gray-900 truncate">
-                                                        {student.name}
-                                                    </h3>
-                                                    <p className="text-xs text-gray-500">
-                                                        {student.age} anos • {getGenderLabel(student.gender)}
-                                                    </p>
+                                            <span>Nome</span>
+                                            {filters.sort_by === 'name' && (
+                                                <ArrowUpDown className="h-3 w-3" />
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => handleSortChange('age')}
+                                            className={`flex items-center space-x-1 hover:text-gray-900 ${
+                                                filters.sort_by === 'age' ? 'text-gray-900 font-medium' : ''
+                                            }`}
+                                        >
+                                            <span>Idade</span>
+                                            {filters.sort_by === 'age' && (
+                                                <ArrowUpDown className="h-3 w-3" />
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => handleSortChange('total_points')}
+                                            className={`flex items-center space-x-1 hover:text-gray-900 ${
+                                                filters.sort_by === 'total_points' ? 'text-gray-900 font-medium' : ''
+                                            }`}
+                                        >
+                                            <span>Pontos</span>
+                                            {filters.sort_by === 'total_points' && (
+                                                <ArrowUpDown className="h-3 w-3" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Students Grid */}
+                            <div className="p-6">
+                                {currentStudents.length === 0 ? (
+                                    <div className="text-center py-12">
+                                        <Users className="mx-auto h-12 w-12 text-gray-400" />
+                                        <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhum estudante encontrado</h3>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            Tente ajustar os filtros ou termo de busca.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                        {currentStudents.map((student) => (
+                                            <div
+                                                key={student.id}
+                                                onClick={() => handleStudentClick(student.id)}
+                                                className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-md transition-all cursor-pointer bg-white"
+                                            >
+                                                <div className="flex items-start justify-between mb-3">
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="text-sm font-medium text-gray-900 truncate">
+                                                            {student.name}
+                                                        </h3>
+                                                        <p className="text-xs text-gray-500">
+                                                            {student.age} anos • {getGenderLabel(student.gender)}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center justify-between">
                       <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
                         {getAgeGroupLabel(student.group)}
                       </span>
-                                                <span className="text-sm font-medium text-gray-900">
+                                                    <span className="text-sm font-medium text-gray-900">
                         {student.total_points} pts
                       </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Pagination */}
-                        {totalPages > 1 && (
-                            <div className="px-6 py-4 border-t border-gray-200">
-                                <div className="flex items-center justify-between">
-                                    <div className="text-sm text-gray-700">
-                                        Mostrando {startIndex + 1} até {Math.min(endIndex, totalStudents)} de {totalStudents} estudantes
+                                        ))}
                                     </div>
+                                )}
+                            </div>
 
-                                    <div className="flex items-center space-x-2">
-                                        <button
-                                            onClick={() => handlePageChange(currentPage - 1)}
-                                            disabled={currentPage === 0}
-                                            className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <ChevronLeft className="h-4 w-4" />
-                                        </button>
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="px-6 py-4 border-t border-gray-200">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-sm text-gray-700">
+                                            Mostrando {startIndex + 1} até {Math.min(endIndex, totalStudents)} de {totalStudents} estudantes
+                                        </div>
 
-                                        <span className="text-sm text-gray-700">
+                                        <div className="flex items-center space-x-2">
+                                            <button
+                                                onClick={() => handlePageChange(currentPage - 1)}
+                                                disabled={currentPage === 0}
+                                                className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                            </button>
+
+                                            <span className="text-sm text-gray-700">
                     Página {currentPage + 1} de {totalPages}
                   </span>
 
-                                        <button
-                                            onClick={() => handlePageChange(currentPage + 1)}
-                                            disabled={currentPage >= totalPages - 1}
-                                            className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <ChevronRight className="h-4 w-4" />
-                                        </button>
+                                            <button
+                                                onClick={() => handlePageChange(currentPage + 1)}
+                                                disabled={currentPage >= totalPages - 1}
+                                                className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                <ChevronRight className="h-4 w-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
