@@ -1,5 +1,6 @@
 import  { useState } from 'react';
 import { useAuth } from "../api/useAuth.tsx";
+import type {CreateStudentRequest, Gender} from "../model/types.ts";
 
 const StudentRegistration = () => {
     const { api } = useAuth();
@@ -49,10 +50,10 @@ const StudentRegistration = () => {
         setIsLoading(true);
 
         try {
-            const studentData = {
+            const studentData: CreateStudentRequest = {
                 name: formData.name,
                 age: parseInt(formData.age),
-                gender: formData.gender,
+                gender: formData.gender as Gender,
                 parent_name: formData.parent_name,
                 parent_phone: formData.parent_phone,
                 address: formData.address || undefined,

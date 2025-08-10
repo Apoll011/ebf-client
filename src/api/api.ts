@@ -475,10 +475,10 @@ export class StudentManagementApi {
      * Register a new student
      */
     async registerStudent(studentData: CreateStudentRequest): Promise<Student> {
-        const queryString = this.buildQueryString({
-            student: studentData
+        return this.request<Student>(`/students`, {
+            method: 'POST',
+            body: JSON.stringify(studentData),
         });
-        return this.request<Student>(`/students${queryString}`);
     }
 
     /**
