@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X, Home, Users, UserPlus } from 'lucide-react';
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../api/useAuth.tsx";
 
 interface HeaderProps {
     currentPath?: string;
@@ -11,25 +12,34 @@ const Header: React.FC<HeaderProps> = ({
                                        }) => {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { user, logout } = useAuth();
+
+    if (!user) {
+        navigate('/login');
+        return null;
+    }
 
     const navigation = [
         {
             name: 'Dashboard',
             href: '/',
             icon: Home,
-            current: currentPath === '/'
+            current: currentPath === '/',
+            roles: ["admin"]
         },
         {
             name: 'Lista de Estudantes',
             href: '/list',
             icon: Users,
-            current: currentPath === '/list'
+            current: currentPath === '/list',
+            roles: ["admin", "teacher"]
         },
         {
             name: 'Registrar',
             href: '/register',
             icon: UserPlus,
-            current: currentPath === '/register'
+            current: currentPath === '/register',
+            roles: ["admin", "teacher", "viewer"]
         }
     ];
 
@@ -42,11 +52,20 @@ const Header: React.FC<HeaderProps> = ({
         setIsMobileMenuOpen(false);
     };
 
+    const getRoleName = () => {
+        if (user.role === 'admin') {
+            return 'Administrador';
+        } else if (user.role == 'teacher') {
+            return 'Professor';
+        } else {
+            return 'Visitante';
+        }
+    }
+
     return (
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
-                    {/* Logo/Brand */}
                     <div className="flex items-center">
                         <button
                             onClick={() => handleNavigation('/')}
@@ -59,11 +78,10 @@ const Header: React.FC<HeaderProps> = ({
                         </button>
                     </div>
 
-                    {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-1">
                         {navigation.map((item) => {
                             const Icon = item.icon;
-                            return (
+                            return item.roles.includes(user.role as string) && (
                                 <button
                                     key={item.name}
                                     onClick={() => handleNavigation(item.href)}
@@ -80,20 +98,18 @@ const Header: React.FC<HeaderProps> = ({
                         })}
                     </nav>
 
-                    {/* Profile/User Menu - Desktop */}
                     <div className="hidden md:flex items-center space-x-4">
                         <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                <span className="text-gray-700 font-medium text-sm">U</span>
+                                <span className="text-gray-700 font-medium text-sm">{user.username.charAt(0).toUpperCase()}</span>
                             </div>
                             <div className="text-sm">
-                                <div className="text-gray-900 font-medium">Utilizador</div>
-                                <div className="text-gray-500 text-xs">Administrador</div>
+                                <div className="text-gray-900 font-medium">{user.username}</div>
+                                <div className="text-gray-500 text-xs">{getRoleName()}</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Mobile menu button */}
                     <div className="md:hidden">
                         <button
                             onClick={toggleMobileMenu}
@@ -109,7 +125,6 @@ const Header: React.FC<HeaderProps> = ({
                     </div>
                 </div>
 
-                {/* Mobile Navigation */}
                 {isMobileMenuOpen && (
                     <div className="md:hidden">
                         <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200 bg-white">
@@ -131,15 +146,14 @@ const Header: React.FC<HeaderProps> = ({
                                 );
                             })}
 
-                            {/* Mobile User Info */}
                             <div className="mt-4 pt-4 border-t border-gray-200">
                                 <div className="flex items-center space-x-3 px-3">
                                     <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                        <span className="text-gray-700 font-medium text-sm">U</span>
+                                        <span className="text-gray-700 font-medium text-sm">{user.username.charAt(0)}</span>
                                     </div>
                                     <div className="text-sm">
-                                        <div className="text-gray-900 font-medium">Utilizador</div>
-                                        <div className="text-gray-500 text-xs">Administrador</div>
+                                        <div className="text-gray-900 font-medium">{user.username}</div>
+                                        <div className="text-gray-500 text-xs">{getRoleName()}</div>
                                     </div>
                                 </div>
                             </div>
