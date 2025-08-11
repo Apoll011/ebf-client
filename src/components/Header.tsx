@@ -72,13 +72,13 @@ const Header: React.FC<HeaderProps> = ({
                             className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
                         >
                             <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">S</span>
+                                <span className="text-white font-bold text-sm">EBF</span>
                             </div>
-                            <span className="text-xl font-semibold text-gray-900">StudentsHub</span>
+                            <span className="text-xl font-semibold text-gray-900">Escola Biblica de Ferias</span>
                         </button>
                     </div>
 
-                    <nav className="hidden md:flex items-center space-x-1">
+                    <nav className="hidden md:flex w-[50%] items-center space-x-1">
                         {navigation.map((item) => {
                             const Icon = item.icon;
                             return item.roles.includes(user.role as string) && (
