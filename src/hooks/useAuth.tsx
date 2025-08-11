@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useState, useCallback, useEffect, type ReactNode} from 'react';
-import { StudentManagementApi, StudentManagementApiError } from './api.ts';
+import { StudentManagementApi, StudentManagementApiError } from '../api/api.ts';
 import type {User} from "../model/types.ts";
 
 interface AuthContextType {

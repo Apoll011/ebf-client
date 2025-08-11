@@ -18,7 +18,7 @@ import {
     UserCheck,
     Gift
 } from 'lucide-react';
-import { useAuth } from "../api/useAuth.tsx";
+import { useAuth } from "../hooks/useAuth.tsx";
 import type {Student} from "../model/types.ts";
 import {MainLayout} from "../layout/main.tsx";
 

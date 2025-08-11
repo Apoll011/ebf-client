@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Loader, AlertCircle, ArrowRight } from 'lucide-react';
-import {useAuth} from "../api/useAuth.tsx";
+import {useAuth} from "../hooks/useAuth.tsx";
 import type {UserRole} from "../model/types.ts";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Users, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Printer } from 'lucide-react';
-import { useAuth } from '../api/useAuth';
+import { useAuth } from '../hooks/useAuth.tsx';
 import type {AgeGroup, Gender, Order, SortBy, StudentListItem, StudentsListQuery} from '../model/types';
 import {MainLayout} from "../layout/main.tsx";
 

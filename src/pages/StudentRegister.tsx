@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from "../api/useAuth.tsx";
+import { useAuth } from "../hooks/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
 import {MainLayout} from "../layout/main.tsx";
 

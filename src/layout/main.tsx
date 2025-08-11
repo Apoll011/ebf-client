@@ -1,5 +1,5 @@
 import Header from "../components/Header.tsx";
-import {useAuth} from "../api/useAuth.tsx";
+import {useAuth} from "../hooks/useAuth.tsx";
 import {useNavigate} from "react-router-dom";
 import React from "react";
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X, Home, Users, UserPlus } from 'lucide-react';
 import {useLocation, useNavigate} from "react-router-dom";
-import {useAuth} from "../api/useAuth.tsx";
+import {useAuth} from "../hooks/useAuth.tsx";
 
 interface HeaderProps {
     currentPath?: string;

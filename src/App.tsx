@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AuthScreen from "./pages/login.tsx";
 import DashboardPage from "./pages/Dashboard.tsx";
-import {AuthProvider} from "./api/useAuth.tsx";
+import {AuthProvider} from "./hooks/useAuth.tsx";
 import StudentRegistration from "./pages/StudentRegister.tsx";
 import StudentInfo from "./pages/Student.tsx";
 import StudentList from "./pages/StudentList.tsx";

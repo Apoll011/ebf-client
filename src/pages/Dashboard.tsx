@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { MainLayout } from "../layout/main.tsx";
-import { useAuth } from "../api/useAuth";
+import { useAuth } from "../hooks/useAuth.tsx";
 import type {
     EventSummary,
     EventProgress,
@@ -17,9 +17,11 @@ import type {
     GenderPerformanceAnalysis,
     EventPredictions, DailyAttendance
 } from "../model/types";
-import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star } from "lucide-react";
 
-// Componente de Loading Skeleton
+import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star } from "lucide-react";
+import {useNavigate} from "react-router-dom";
+import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";
+
 const SkeletonCard = ({ className = "" }) => (
     <div className={`bg-white rounded-xl border border-gray-100 p-6 h-full ${className}`}>
         <div className="animate-pulse">
@@ -52,12 +54,11 @@ const WidgetWrapper = ({ children, isLoading, skeleton }: { children: React.Reac
 };
 
 
-// Widget Resumo do Evento
 const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: EventProgress | null }) => {
     const progressPercentage = data.completion_percentage;
 
     return (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border border-blue-200 p-6 h-full">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border border-blue-200 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Resumo do Evento</h3>
                 <Calendar className="h-5 w-5 text-blue-600" />
@@ -104,7 +105,6 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
     );
 };
 
-// Widget Estatísticas de Hoje
 const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailedData: TodayDetailedStats | null }) => {
     const classColors: { [key: string]: string } = { '0-6': 'bg-blue-400', '7-9': 'bg-green-400', '10-12': 'bg-yellow-400', '13-15': 'bg-red-400' };
 
@@ -120,15 +120,9 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
                     <p className="text-sm text-gray-600">Taxa de Presença</p>
                     <p className="text-xs text-gray-500">{data.present_count} de {data.total_students} alunos</p>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="text-lg font-bold text-gray-900">{data.points_awarded_today}</p>
-                        <p className="text-xs text-gray-600">Pontos Hoje</p>
-                    </div>
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="text-lg font-bold text-gray-900">{data.daily_goal_completion.toFixed(0)}%</p>
-                        <p className="text-xs text-gray-600">Meta do Dia</p>
-                    </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-lg font-bold text-gray-900">{data.points_awarded_today}</p>
+                    <p className="text-xs text-gray-600">Pontos Hoje</p>
                 </div>
                 {detailedData && <div className="mt-2">
                     <h4 className="text-sm font-semibold text-gray-700 mb-2">Presença por Classe Hoje</h4>
@@ -151,9 +145,13 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
     );
 };
 
-// Widget Top Performers
 const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
     const topThree = data.slice(0, 3);
+    const navigate = useNavigate();
+
+    const handleStudentClick = (studentId: string) => {
+        navigate(`/student/${studentId}`)
+    }
 
     return (
         <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
@@ -169,7 +167,7 @@ const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
                         }`}>
                             {index + 1}
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1" >
                             <p className="font-medium text-gray-900">{student.name}</p>
                             <p className="text-sm text-gray-600">
                                 {student.class} • {student.total_points} pontos
@@ -186,10 +184,9 @@ const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
 const chartColors = ['#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#ec4899', '#6366f1'];
 const getColor = (index: number) => chartColors[index % chartColors.length];
 
-// Widget Registro Demographics
 const RegistrationWidget = ({ data, demographics }: { data: RegistrationStats, demographics: RegistrationDemographics | null }) => {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Registros</h3>
                 <Users className="h-5 w-5 text-blue-600" />
@@ -213,9 +210,9 @@ const RegistrationWidget = ({ data, demographics }: { data: RegistrationStats, d
                     <div className="mt-2 space-y-3 pt-2 border-t">
                         <div>
                             <h4 className="text-sm font-semibold text-gray-700 mb-1">Distribuição por Classe</h4>
-                            <div className="w-full bg-gray-200 rounded-full h-4 flex overflow-hidden">
+                            <div className="w-full bg-gray-200 rounded-full h-6 flex overflow-hidden">
                                 {Object.entries(demographics.class_distribution).map(([classGroup, dist], index) => (
-                                    <div key={classGroup} style={{ width: `${dist.percentage}%`, backgroundColor: getColor(index) }} title={`${classGroup}: ${dist.percentage.toFixed(1)}%`}></div>
+                                    <div key={classGroup} className="text-white text-center"  style={{ width: `${dist.percentage}%`, backgroundColor: getColor(index) }} title={`${classGroup}: ${dist.percentage.toFixed(1)}%`}>   {classGroup}</div>
                                 ))}
                             </div>
                         </div>
@@ -226,7 +223,6 @@ const RegistrationWidget = ({ data, demographics }: { data: RegistrationStats, d
     );
 };
 
-// Widget Engajamento
 const EngagementWidget = ({ data }: { data: Engagement }) => {
     const getTrendIcon = () => {
         switch (data.trend) {
@@ -237,7 +233,7 @@ const EngagementWidget = ({ data }: { data: Engagement }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Engajamento</h3>
                 <Target className="h-5 w-5 text-purple-600" />
@@ -268,7 +264,6 @@ const EngagementWidget = ({ data }: { data: Engagement }) => {
     );
 };
 
-// Widget Pontos por Categoria
 const PointsCategoryWidget = ({ data }: { data: PointsCategorySummary[] }) => {
     const categoryNames: { [key: string]: string } = {
         PRESENCE: 'Presença',
@@ -304,7 +299,6 @@ const PointsCategoryWidget = ({ data }: { data: PointsCategorySummary[] }) => {
     );
 };
 
-// Widget Performance por Classe
 const ClassPerformanceWidget = ({ data }: { data: ClassPerformance[] }) => {
     const classNames: { [key: string]: string } = {
         '0-6': 'Pequenos (0-6)',
@@ -348,7 +342,6 @@ const ClassPerformanceWidget = ({ data }: { data: ClassPerformance[] }) => {
     );
 };
 
-// Widget Predições do Evento
 const EventPredictionsWidget = ({ data }: { data: EventPredictions }) => {
     return (
         <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl border border-green-200 p-6 h-full">
@@ -461,7 +454,7 @@ const PointsDistributionWidget = ({ data }: { data: PointsDistribution }) => {
 
 const GenderPerformanceWidget = ({ data }: { data: GenderPerformanceAnalysis }) => {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Performance por Gênero</h3>
                 <UserCheck className="h-5 w-5 text-pink-600" />
@@ -489,40 +482,6 @@ const GenderPerformanceWidget = ({ data }: { data: GenderPerformanceAnalysis }) 
     );
 };
 
-// Hook para buscar dados de forma individual
-function useWidgetData<T>(fetcher: () => Promise<T | null>, defaultValue: T) {
-    const [data, setData] = useState<T | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    const memoizedFetcher = useCallback(fetcher, []);
-
-    useEffect(() => {
-        let isMounted = true;
-        memoizedFetcher()
-            .then(response => {
-                if (isMounted) {
-                    setData(response ?? defaultValue);
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao buscar dados do widget:', error);
-                if (isMounted) {
-                    setData(defaultValue);
-                }
-            })
-            .finally(() => {
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            });
-        
-        return () => { isMounted = false; };
-    }, [memoizedFetcher, defaultValue]);
-
-    return { data, isLoading };
-}
-
-// Default data objects
 const defaultEventSummary: EventSummary = { event_name: 'N/A', current_day: 0, total_days: 0, completion_percentage: 0, total_registered: 0, average_daily_attendance: 0, total_points_awarded: 0 };
 const defaultTodaySummary: TodaySummary = { present_count: 0, total_students: 0, attendance_rate: 0, points_awarded_today: 0, daily_goal_completion: 0 };
 const defaultRegistrationStats: RegistrationStats = { total_students: 0, by_gender: { male: 0, female: 0 } };
@@ -532,98 +491,11 @@ const defaultPointsDistribution: PointsDistribution = { distribution: [], averag
 const defaultGenderPerformance: GenderPerformanceAnalysis = { male: { average_points: 0, average_attendance_rate: 0 }, female: { average_points: 0, average_attendance_rate: 0 }, comparison: { points_difference: 0 } };
 
 
-// First, create a cache utility
-const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-
-interface CacheItem<T> {
-    data: T;
-    timestamp: number;
-}
-
-class DashboardCache {
-    private cache = new Map<string, CacheItem<any>>();
-
-    set<T>(key: string, data: T): void {
-        this.cache.set(key, {
-            data,
-            timestamp: Date.now()
-        });
-    }
-
-    get<T>(key: string): T | null {
-        const item = this.cache.get(key);
-        if (!item) return null;
-
-        const isExpired = Date.now() - item.timestamp > CACHE_DURATION;
-        if (isExpired) {
-            this.cache.delete(key);
-            return null;
-        }
-
-        return item.data;
-    }
-
-    clear(): void {
-        this.cache.clear();
-    }
-
-    delete(key: string): void {
-        this.cache.delete(key);
-    }
-}
-
-const dashboardCache = new DashboardCache();
-
-// Enhanced useWidgetData hook with caching
-const useWidgetDataWithCache = <T>(
-    key: string,
-    apiCall: () => Promise<T>,
-    defaultValue: T,
-    forceRefresh: boolean = false
-) => {
-    const [data, setData] = useState<T>(defaultValue);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            // Check cache first unless force refresh is requested
-            if (!forceRefresh) {
-                const cachedData = dashboardCache.get<T>(key);
-                if (cachedData !== null) {
-                    setData(cachedData);
-                    return;
-                }
-            }
-
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                const result = await apiCall();
-                setData(result);
-                dashboardCache.set(key, result);
-            } catch (err) {
-                setError(err as Error);
-                console.error(`Error fetching ${key}:`, err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [key, forceRefresh]); // Only re-run if key or forceRefresh changes
-
-    return { data, isLoading, error };
-};
-
-// Updated Dashboard Component
 const DashboardPage: React.FC = () => {
     const { api } = useAuth();
     const [forceRefresh, setForceRefresh] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-    // All API calls with caching
     const { data: eventSummary, isLoading: isLoadingEventSummary } = useWidgetDataWithCache(
         'eventSummary',
         () => api.getEventSummary(),
@@ -729,13 +601,11 @@ const DashboardPage: React.FC = () => {
         forceRefresh
     );
 
-    // Refresh handler
     const handleRefresh = async () => {
         setRefreshing(true);
-        dashboardCache.clear(); // Clear all cache
-        setForceRefresh(prev => !prev); // Toggle to trigger re-fetch
+        dashboardCache.clear();
+        setForceRefresh(prev => !prev);
 
-        // Reset refreshing state after a delay to allow all requests to complete
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);
@@ -751,7 +621,6 @@ const DashboardPage: React.FC = () => {
     return (
         <MainLayout>
             <div className="space-y-6 p-6 bg-gray-50 min-h-screen">
-                {/* Header with refresh button */}
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
                     <button
@@ -771,7 +640,6 @@ const DashboardPage: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Grid Principal */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="lg:col-span-2">
                         <WidgetWrapper isLoading={isLoadingEventSummary || isLoadingEventProgress} skeleton={<SkeletonCard />}>
@@ -790,7 +658,6 @@ const DashboardPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Segunda linha */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <WidgetWrapper isLoading={isLoadingTopPerformers} skeleton={<SkeletonCard />}>
                         {topPerformers && <TopPerformersWidget data={topPerformers} />}
@@ -803,7 +670,6 @@ const DashboardPage: React.FC = () => {
                     </WidgetWrapper>
                 </div>
 
-                {/* Terceira linha - Analytics */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <WidgetWrapper isLoading={isLoadingDailyAttendance} skeleton={<SkeletonChart />}>
                         {dailyAttendance && <DailyAttendanceWidget data={dailyAttendance} />}
@@ -813,7 +679,6 @@ const DashboardPage: React.FC = () => {
                     </WidgetWrapper>
                 </div>
 
-                {/* Quarta linha - Pontos */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <WidgetWrapper isLoading={isLoadingPointsCategory} skeleton={<SkeletonChart />}>
                         {pointsCategory && <PointsCategoryWidget data={pointsCategory} />}
@@ -823,7 +688,6 @@ const DashboardPage: React.FC = () => {
                     </WidgetWrapper>
                 </div>
 
-                {/* Quinta linha - Performance */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
                         <WidgetWrapper isLoading={isLoadingClassPerformance} skeleton={<SkeletonChart />}>
