@@ -10,7 +10,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = () => {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const currentPath = useLocation().pathname;
 
@@ -99,14 +99,16 @@ const Header: React.FC<HeaderProps> = () => {
                     </nav>
 
                     <div className="hidden md:flex items-center space-x-4">
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-3 group">
                             <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                <span className="text-gray-700 font-medium text-sm">{user.username.charAt(0).toUpperCase()}</span>
+                                <span
+                                    className="text-gray-700 font-medium text-sm">{user.username.charAt(0).toUpperCase()}</span>
                             </div>
                             <div className="text-sm">
                                 <div className="text-gray-900 font-medium">{user.username}</div>
                                 <div className="text-gray-500 text-xs">{getRoleName()}</div>
                             </div>
+                            <button onClick={logout} className="text-black  hover:bg-gray-200 w-25 h-15 top-12 right-8 rounded-2xl absolute hidden bg-white border border-gray-200 shadow-lg z-50 group-hover:block">Logout</button>
                         </div>
                     </div>
 
