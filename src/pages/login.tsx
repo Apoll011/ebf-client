@@ -194,7 +194,7 @@ const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess:
     return (
         <div className="w-full max-w-sm mx-auto">
             <div className="text-center mb-12">
-                <h1 className="text-2xl font-light text-gray-800 mb-2">Crie uma Conta</h1>
+                <h1 className="text-2xl font-light text-gray-800 mb-2">Crie uma Conta no Portal EBF</h1>
             </div>
 
             {error && (
@@ -340,7 +340,7 @@ const AuthScreen = () => {
     };
     
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-[url('wallpaper.webp')] bg-cover bg-no-repeat flex items-center justify-between p-6 relative">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 transition-all duration-300">
                     <div className="transition-opacity duration-500">
@@ -350,11 +350,23 @@ const AuthScreen = () => {
                             <RegisterForm onToggle={handleToggle} onSuccess={handleSuccess} />
                         )}
                     </div>
+                    <div className="text-center mt-6">
+                        <p className="text-xs text-gray-400">Por Tiago Ines @Embrace</p>
+                    </div>
                 </div>
+            </div>
 
-                <div className="text-center mt-6">
-                    <p className="text-xs text-gray-400">Por Tiago Ines @Embrace</p>
-                </div>
+            <div className="fixed bottom-4 right-4 w-12 h-12 flex items-center justify-center">
+                <svg
+                    viewBox="0 0 100 100"
+                    className="w-full h-full"
+                >
+                    <circle cx="50" cy="50" r="48" fill="white" />
+                    <g style={{ transformOrigin: '50% 60%', animation: 'sway 3s ease-in-out infinite' }}>
+                        <rect x="45" y="20" width="10" height="60" fill="#FFD700" />
+                        <rect x="30" y="40" width="40" height="10" fill="#FFD700" />
+                    </g>
+                </svg>
             </div>
         </div>
     );
