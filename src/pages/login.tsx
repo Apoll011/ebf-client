@@ -33,7 +33,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
         }
     };
 
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSubmit();
         }
@@ -70,7 +70,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
                         placeholder="Password"
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        onKeyPress={handleKeyPress}
+                        onKeyUp={handleKeyPress}
                         className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400 pr-12"
                     />
                     <button
@@ -185,7 +185,7 @@ const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess:
         }
     };
 
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSubmit();
         }

@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from "../api/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
 import {MainLayout} from "../layout/main.tsx";
@@ -71,7 +71,7 @@ const StudentRegistration = () => {
         }
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
@@ -84,7 +84,7 @@ const StudentRegistration = () => {
         return `${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)}`;
     };
 
-    const handlePhoneChange = (e) => {
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const formatted = formatPhoneInput(e.target.value);
         setFormData(prev => ({ ...prev, parent_phone: formatted }));
     };
@@ -143,8 +143,7 @@ const StudentRegistration = () => {
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                     >
-                                        <option value="">Selecione...</option>
-                                        <option value="male">Masculino</option>
+                                        <option defaultChecked={true} value="male">Masculino</option>
                                         <option value="female">Feminino</option>
                                     </select>
                                 </div>
@@ -176,7 +175,7 @@ const StudentRegistration = () => {
                                         onChange={handlePhoneChange}
                                         maxLength={9}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="9XX XX XX ou 5XX XX XX"
+                                        placeholder="Telefone"
                                     />
                                 </div>
 

@@ -1,10 +1,9 @@
 import Header from "../components/Header.tsx";
 import {useAuth} from "../api/useAuth.tsx";
 import {useNavigate} from "react-router-dom";
-import {TypeIcon} from "lucide-react";
+import React from "react";
 
-
-export const MainLayout = ({children}) => {
+export const MainLayout = ({children}: {children: React.ReactNode}) => {
     const { isAuthenticated, isLoading } = useAuth();
 
     const navigate = useNavigate();
