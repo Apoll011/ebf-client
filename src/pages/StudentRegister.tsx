@@ -2,6 +2,7 @@ import  { useState } from 'react';
 import { useAuth } from "../api/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
 import Header from "../components/Header.tsx";
+import {Settings} from "lucide-react";
 
 const StudentRegistration = () => {
     const { api } = useAuth();
@@ -215,22 +216,13 @@ const StudentRegistration = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end pt-4">
-                                <button
-                                    type="submit"
-                                    onClick={handleSubmit}
-                                    disabled={isLoading}
-                                    className="relative px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[120px]"
-                                >
+                            <button type="submit"  onClick={handleSubmit}  disabled={isLoading}  className="relative px-8 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-[100%]">
                                     {isLoading ? (
-                                        <div className="flex items-center justify-center">
-                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        </div>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     ) : (
                                         'Registrar'
                                     )}
                                 </button>
-                            </div>
                         </div>
                     </div>
                 </div>
