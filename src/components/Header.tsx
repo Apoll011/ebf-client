@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Menu, X, Home, Users, UserPlus } from 'lucide-react';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../api/useAuth.tsx";
 
 interface HeaderProps {
     currentPath?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({
-                                           currentPath = '/',
-                                       }) => {
+const Header: React.FC<HeaderProps> = () => {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { user } = useAuth();
+
+    const currentPath = useLocation().pathname;
 
     if (!user) {
         navigate('/login');
@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({
             name: 'Lista de Estudantes',
             href: '/list',
             icon: Users,
-            current: currentPath === '/list',
+            current: currentPath === '/list' || currentPath.startsWith("/student/"),
             roles: ["admin", "teacher"]
         },
         {

@@ -1,7 +1,7 @@
 import  { useState } from 'react';
 import { useAuth } from "../api/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
-import Header from "../components/Header.tsx";
+import {MainLayout} from "../layout/main.tsx";
 
 const StudentRegistration = () => {
     const { api } = useAuth();
@@ -76,11 +76,9 @@ const StudentRegistration = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const formatPhoneInput = (value) => {
-        // Remove all non-digits
+    const formatPhoneInput = (value: string) => {
         const digits = value.replace(/\D/g, '');
 
-        // Format as XXX XX XX
         if (digits.length <= 3) return digits;
         if (digits.length <= 5) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
         return `${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)}`;
@@ -92,10 +90,8 @@ const StudentRegistration = () => {
     };
 
     return (
-        <>
-            <Header currentPath="/register"/>
-            <div className="min-h-screen bg-gray-50 p-6">
-                <div className="max-w-2xl mx-auto">
+        <MainLayout>
+            <div className="max-w-2xl mx-auto">
                     <div className="mb-8">
                         <h1 className="text-3xl font-light text-gray-900 mb-2">Registro de Alunos</h1>
                         <p className="text-gray-600">Adicione novos alunos ao sistema rapidamente</p>
@@ -226,23 +222,21 @@ const StudentRegistration = () => {
                     </div>
                 </div>
 
-                {/* Notification */}
-                {notification && (
-                    <div className={`fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transition-all duration-300 ${
+            {notification && (
+                <div className={`fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transition-all duration-300 ${
                         notification.type === 'error'
                             ? 'bg-red-50 border border-red-200 text-red-800'
                             : 'bg-green-50 border border-green-200 text-green-800'
                     }`}>
-                        <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2">
                             <div className={`w-2 h-2 rounded-full ${
                                 notification.type === 'error' ? 'bg-red-400' : 'bg-green-400'
                             }`}></div>
                             <span className="font-medium">{notification.message}</span>
                         </div>
-                    </div>
-                )}
-            </div>
-        </>
+                </div>
+            )}
+        </MainLayout>
     );
 };
 

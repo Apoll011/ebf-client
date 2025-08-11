@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {
     Calendar,
     Phone,
@@ -19,10 +19,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from "../api/useAuth.tsx";
 import type {Student} from "../model/types.ts";
-import Header from "../components/Header.tsx";
+import {MainLayout} from "../layout/main.tsx";
 
 const StudentInfo = () => {
     const { studentId } = useParams();
+    const navigate = useNavigate();
     const { api } = useAuth();
 
     const [student, setStudent] = useState<Student | null>(null);
@@ -33,7 +34,7 @@ const StudentInfo = () => {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [selectedPoints, setSelectedPoints] = useState<{ PRESENCE?: boolean; BOOK?: boolean; VERSICLE?: boolean; PARTICIPATION?: boolean; GUEST?: boolean; GAME?: boolean; }>({});
     const [adjustmentData, setAdjustmentData] = useState({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
-    const [notification, setNotification] = useState<{message: string, type: string}>(null);
+    const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
 
     const pointCategories = [
         { key: 'PRESENCE', label: 'Presença', icon: UserCheck, color: 'emerald', points: 10 },
@@ -44,13 +45,18 @@ const StudentInfo = () => {
         { key: 'GAME', label: 'Jogo', icon: Trophy, color: 'indigo', points: 12 }
     ];
 
+    if (!studentId) {
+        navigate('/');
+        return null;
+    }
+
     useEffect(() => {
         if (studentId) {
             loadStudent();
         }
     }, [studentId]);
 
-    const showNotification = (message, type = 'success') => {
+    const showNotification = (message: string, type = 'success') => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), 4000);
     };
@@ -60,7 +66,7 @@ const StudentInfo = () => {
         try {
             const studentData = await api.getStudent(studentId);
             setStudent(studentData);
-        } catch (error) {
+        } catch {
             showNotification('Erro ao carregar dados do aluno', 'error');
         } finally {
             setIsLoading(false);
@@ -74,116 +80,6 @@ const StudentInfo = () => {
         } catch (error) {
             console.error('Failed to update student data:', error);
         }
-    };
-
-    const getPointsForDate = async (studentId, date) => {
-        const dayPoints = student?.points?.find(p => p.date === date);
-        return dayPoints || {};
-    };
-
-    const openPointsModal = async () => {
-        const points = await getPointsForDate(student.id, selectedDate);
-        const booleanPoints = {};
-        pointCategories.forEach(cat => {
-            booleanPoints[cat.key] = Boolean(points[cat.key]);
-        });
-        setSelectedPoints(booleanPoints);
-        setShowPointsModal(true);
-    };
-
-    const togglePoint = (category) => {
-        setSelectedPoints(prev => ({
-            ...prev,
-            [category]: !prev[category]
-        }));
-    };
-
-    const savePoints = async () => {
-        setIsUpdatingPoints(true);
-        try {
-            const pointsData = {
-                date: selectedDate,
-                points: selectedPoints
-            };
-            await api.awardPoints(student.id, pointsData);
-            showNotification('Pontos atualizados com sucesso!');
-            setShowPointsModal(false);
-            await updateStudentInBackground();
-        } catch (error) {
-            showNotification('Erro ao salvar pontos', 'error');
-        } finally {
-            setIsUpdatingPoints(false);
-        }
-    };
-
-    const adjustPoints = async () => {
-        setIsUpdatingPoints(true);
-        try {
-            await api.adjustPoints(student.id, adjustmentData);
-            showNotification('Ajuste de pontos realizado com sucesso!');
-            setShowAdjustModal(false);
-            setAdjustmentData({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
-            await updateStudentInBackground();
-        } catch (error) {
-            showNotification('Erro ao ajustar pontos', 'error');
-        } finally {
-            setIsUpdatingPoints(false);
-        }
-    };
-
-    const getWeekDates = () => {
-        const today = new Date();
-        const currentWeek = [];
-        const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay());
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(startOfWeek);
-            date.setDate(startOfWeek.getDate() + i);
-            currentWeek.push({
-                date: date.toISOString().split('T')[0],
-                day: date.getDate(),
-                dayName: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][i],
-                isToday: date.toDateString() === today.toDateString()
-            });
-        }
-        return currentWeek;
-    };
-
-    const getColorClass = (color, variant = 'bg') => {
-        const colors = {
-            emerald: {
-                bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                button: 'bg-emerald-500 hover:bg-emerald-600',
-                icon: 'text-emerald-600'
-            },
-            blue: {
-                bg: 'bg-blue-50 text-blue-700 border-blue-200',
-                button: 'bg-blue-500 hover:bg-blue-600',
-                icon: 'text-blue-600'
-            },
-            violet: {
-                bg: 'bg-violet-50 text-violet-700 border-violet-200',
-                button: 'bg-violet-500 hover:bg-violet-600',
-                icon: 'text-violet-600'
-            },
-            amber: {
-                bg: 'bg-amber-50 text-amber-700 border-amber-200',
-                button: 'bg-amber-500 hover:bg-amber-600',
-                icon: 'text-amber-600'
-            },
-            rose: {
-                bg: 'bg-rose-50 text-rose-700 border-rose-200',
-                button: 'bg-rose-500 hover:bg-rose-600',
-                icon: 'text-rose-600'
-            },
-            indigo: {
-                bg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-                button: 'bg-indigo-500 hover:bg-indigo-600',
-                icon: 'text-indigo-600'
-            }
-        };
-        return colors[color]?.[variant] || colors.blue[variant];
     };
 
     const LoadingPlaceholder = () => (
@@ -273,15 +169,128 @@ const StudentInfo = () => {
         </div>
     );
 
-    return (
-        <>
-            <Header currentPath="/list" />
-            {isLoading && <LoadingPlaceholder />}
-            {!student && <NotFoundPlaceholder />}
-            {student && (
-                <div className="min-h-screen bg-gray-50">
 
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    if (isLoading) {
+        return <LoadingPlaceholder />;
+    }
+
+    if (!student) {
+        return <NotFoundPlaceholder />
+    }
+
+    const getPointsForDate = async (date: string) => {
+        const dayPoints = student?.points?.find(p => p.date === date);
+        return dayPoints || {};
+    };
+
+    const openPointsModal = async () => {
+        const points = await getPointsForDate(selectedDate);
+        const booleanPoints = {};
+        pointCategories.forEach(cat => {
+            booleanPoints[cat.key] = Boolean(points[cat.key]);
+        });
+        setSelectedPoints(booleanPoints);
+        setShowPointsModal(true);
+    };
+
+    const togglePoint = (category) => {
+        setSelectedPoints(prev => ({
+            ...prev,
+            [category]: !prev[category]
+        }));
+    };
+
+    const savePoints = async () => {
+        setIsUpdatingPoints(true);
+        try {
+            const pointsData = {
+                date: selectedDate,
+                points: selectedPoints
+            };
+            await api.awardPoints(student.id, pointsData);
+            showNotification('Pontos atualizados com sucesso!');
+            setShowPointsModal(false);
+            await updateStudentInBackground();
+        } catch {
+            showNotification('Erro ao salvar pontos', 'error');
+        } finally {
+            setIsUpdatingPoints(false);
+        }
+    };
+
+    const adjustPoints = async () => {
+        setIsUpdatingPoints(true);
+        try {
+            await api.adjustPoints(student.id, adjustmentData);
+            showNotification('Ajuste de pontos realizado com sucesso!');
+            setShowAdjustModal(false);
+            setAdjustmentData({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
+            await updateStudentInBackground();
+        } catch {
+            showNotification('Erro ao ajustar pontos', 'error');
+        } finally {
+            setIsUpdatingPoints(false);
+        }
+    };
+
+    const getWeekDates = () => {
+        const today = new Date();
+        const currentWeek = [];
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(startOfWeek);
+            date.setDate(startOfWeek.getDate() + i);
+            currentWeek.push({
+                date: date.toISOString().split('T')[0],
+                day: date.getDate(),
+                dayName: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][i],
+                isToday: date.toDateString() === today.toDateString()
+            });
+        }
+        return currentWeek;
+    };
+
+    const getColorClass = (color, variant = 'bg') => {
+        const colors = {
+            emerald: {
+                bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                button: 'bg-emerald-500 hover:bg-emerald-600',
+                icon: 'text-emerald-600'
+            },
+            blue: {
+                bg: 'bg-blue-50 text-blue-700 border-blue-200',
+                button: 'bg-blue-500 hover:bg-blue-600',
+                icon: 'text-blue-600'
+            },
+            violet: {
+                bg: 'bg-violet-50 text-violet-700 border-violet-200',
+                button: 'bg-violet-500 hover:bg-violet-600',
+                icon: 'text-violet-600'
+            },
+            amber: {
+                bg: 'bg-amber-50 text-amber-700 border-amber-200',
+                button: 'bg-amber-500 hover:bg-amber-600',
+                icon: 'text-amber-600'
+            },
+            rose: {
+                bg: 'bg-rose-50 text-rose-700 border-rose-200',
+                button: 'bg-rose-500 hover:bg-rose-600',
+                icon: 'text-rose-600'
+            },
+            indigo: {
+                bg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                button: 'bg-indigo-500 hover:bg-indigo-600',
+                icon: 'text-indigo-600'
+            }
+        };
+        return colors[color]?.[variant] || colors.blue[variant];
+    };
+
+    return (
+        <MainLayout>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div className="space-y-6">
                                 <div className="bg-white rounded-lg border border-gray-200">
@@ -404,8 +413,8 @@ const StudentInfo = () => {
                         </div>
                     </div>
 
-                    {showPointsModal && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            {showPointsModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                                 <div className="p-6 border-b border-gray-200">
                                     <div className="flex items-center justify-between mb-4">
@@ -503,10 +512,10 @@ const StudentInfo = () => {
                                 </div>
                             </div>
                         </div>
-                    )}
+            )}
 
-                    {showAdjustModal && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            {showAdjustModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                             <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
                                 <div className="p-6 border-b border-gray-200">
                                     <div className="flex items-center justify-between">
@@ -582,15 +591,15 @@ const StudentInfo = () => {
                                 </div>
                             </div>
                         </div>
-                    )}
+            )}
 
-                    {notification && (
-                        <div className={`fixed top-6 right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
+            {notification && (
+                <div className={`fixed top-6 right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
                             notification.type === 'error'
                                 ? 'bg-red-50 border-red-200 text-red-800'
                                 : 'bg-emerald-50 border-emerald-200 text-emerald-800'
                         }`}>
-                            <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                                     notification.type === 'error'
                                         ? 'bg-red-100 text-red-600'
@@ -612,11 +621,9 @@ const StudentInfo = () => {
                                     <XCircle className="w-4 h-4" />
                                 </button>
                             </div>
-                        </div>
-                    )}
                 </div>
             )}
-        </>
+        </MainLayout>
     );
 };
 

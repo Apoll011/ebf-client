@@ -1,17 +1,12 @@
 import React from "react";
-import Header from "../components/Header.tsx";
-import {withAuth} from "../api/useAuth.tsx";
+import {MainLayout} from "../layout/main.tsx";
 
-// eslint-disable-next-line react-refresh/only-export-components
 const DashboardPage: React.FC = () => {
     return (
-        <div>
-            <Header />
+        <MainLayout>
             <h1>Dashboard</h1>
-
-        </div>
+        </MainLayout>
     );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export default withAuth(DashboardPage);
+export default DashboardPage;

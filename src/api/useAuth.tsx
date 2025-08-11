@@ -1,7 +1,6 @@
 import React, {createContext, useContext, useState, useCallback, useEffect, type ReactNode} from 'react';
 import { StudentManagementApi, StudentManagementApiError } from './api.ts';
 import type {User} from "../model/types.ts";
-import {useNavigate} from "react-router-dom";
 
 interface AuthContextType {
     api: StudentManagementApi;
@@ -127,25 +126,4 @@ export const useAuth = (): AuthContextType => {
     }
 
     return context;
-};
-
-export const withAuth = <P extends object>(
-    Component: React.ComponentType<P>
-): React.FC<P> => {
-    const AuthenticatedComponent: React.FC<P> = (props) => {
-        const { isAuthenticated, isLoading } = useAuth();
-        const navigate = useNavigate();
-
-        if (isLoading) {
-            return <div>Loading...</div>;
-        }
-
-        if (!isAuthenticated) {
-            navigate('/login');
-        }
-
-        return <Component {...props} />;
-    };
-
-    return AuthenticatedComponent;
 };
