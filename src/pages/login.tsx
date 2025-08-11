@@ -28,7 +28,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
             else {
                 setError('Credenciais inválidas');
             }
-        } catch (err) {
+        } catch {
             setError('Um erro Ocorreu. Tente novamente.');
         }
     };
@@ -104,7 +104,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="text-gray-600 hover:text-gray-800 text-sm transition-colors"
+                        className="text-gray-600 hover:text-gray-800  hover:cursor-pointer text-sm transition-colors"
                     >
 
                         Não tem uma conta? <span className="font-medium">Crie Uma</span>
@@ -178,7 +178,7 @@ const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess:
             else {
                 setError('Registracão falhou. Tente novamente.');
             }
-        } catch (err) {
+        } catch {
             setError('Registracão falhou. Tente novamente.');
         } finally {
             setLoading(false);
@@ -307,7 +307,7 @@ const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess:
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="text-gray-600 hover:text-gray-800 text-sm transition-colors"
+                        className="text-gray-600 hover:text-gray-800 hover:cursor-pointer text-sm transition-colors"
                     >
                         Já tem uma conta? <span className="font-medium">Cadastre-se</span>
                     </button>
@@ -356,22 +356,6 @@ const AuthScreen = () => {
                     <p className="text-xs text-gray-400">Por Tiago Ines @Embrace</p>
                 </div>
             </div>
-
-            <style jsx>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-slideIn {
-          animation: slideIn 0.3s ease-out;
-        }
-      `}</style>
         </div>
     );
 };
