@@ -129,11 +129,12 @@ export class StudentManagementApi {
                     'Accept': 'application/json',
                 },
                 body: formData.toString(),
-                skipAuth: true, // Skip auth for login request
+                skipAuth: true,
             });
 
-            // Store authentication data
-            this.setAuthData(response, credentials.username);
+            const user = await this.getUser(credentials.username);
+
+            this.setAuthData(response, user);
 
             return response;
         } catch (error) {
@@ -252,17 +253,12 @@ export class StudentManagementApi {
     /**
      * Set authentication data from OAuth2 login response
      */
-    private setAuthData(loginResponse: LoginResponse, username: string): void {
+    private setAuthData(loginResponse: LoginResponse, user: User): void {
         this.authToken = loginResponse.access_token;
         this.refreshToken = loginResponse.refresh_token || null;
 
-        // Create user object from available data
-        this.user = {
-            username: username,
-            // Additional user data would come from a separate user info endpoint if needed
-        };
+        this.user = user;
 
-        // Calculate token expiration (default to 1 hour if not provided)
         const expiresInSeconds = loginResponse.expires_in || 3600;
         this.tokenExpiresAt = new Date(Date.now() + expiresInSeconds * 1000);
 
@@ -464,6 +460,16 @@ export class StudentManagementApi {
         return this.request<User>('/users', {
             method: 'POST',
             body: JSON.stringify(userData),
+        });
+    }
+
+    async getUser(username: string): Promise<User> {
+        const queryString = this.buildQueryString({
+            username: username,
+        });
+        return this.request<User>(`/users${queryString}`, {
+            method: 'GET',
+            skipAuth: true,
         });
     }
 
