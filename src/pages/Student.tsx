@@ -171,11 +171,19 @@ const StudentInfo = () => {
 
 
     if (isLoading) {
-        return <LoadingPlaceholder />;
+        return (
+            <MainLayout>
+                <LoadingPlaceholder />
+            </MainLayout>
+        );
     }
 
     if (!student) {
-        return <NotFoundPlaceholder />
+        return (
+            <MainLayout>
+                <NotFoundPlaceholder />
+            </MainLayout>
+        );
     }
 
     const getPointsForDate = async (date: string) => {
