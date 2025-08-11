@@ -371,8 +371,8 @@ export class StudentManagementApi {
             ...fetchOptions.headers,
         };
 
-        // Add auth header if we have a token and not skipping auth
         if (!skipAuth && this.authToken) {
+            // @ts-ignore
             headers['Authorization'] = `Bearer ${this.authToken}`;
         }
 

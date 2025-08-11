@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({
                                        }) => {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
 
     if (!user) {
         navigate('/login');

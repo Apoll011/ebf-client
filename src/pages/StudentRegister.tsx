@@ -2,12 +2,11 @@ import  { useState } from 'react';
 import { useAuth } from "../api/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
 import Header from "../components/Header.tsx";
-import {Settings} from "lucide-react";
 
 const StudentRegistration = () => {
     const { api } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
-    const [notification, setNotification] = useState(null);
+    const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         age: '',
@@ -18,7 +17,7 @@ const StudentRegistration = () => {
         notes: ''
     });
 
-    const showNotification = (message, type = 'success') => {
+    const showNotification = (message: string, type = 'success') => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), 5000);
     };
@@ -65,7 +64,7 @@ const StudentRegistration = () => {
             await api.registerStudent(studentData);
             showNotification(`Aluno ${formData.name} registrado com sucesso!`);
             resetForm();
-        } catch (error) {
+        } catch {
             showNotification('Erro ao registrar aluno. Tente novamente.', 'error');
         } finally {
             setIsLoading(false);
@@ -179,7 +178,7 @@ const StudentRegistration = () => {
                                         name="parent_phone"
                                         value={formData.parent_phone}
                                         onChange={handlePhoneChange}
-                                        maxLength="9"
+                                        maxLength={9}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                         placeholder="9XX XX XX ou 5XX XX XX"
                                     />
@@ -209,7 +208,7 @@ const StudentRegistration = () => {
                                         name="notes"
                                         value={formData.notes}
                                         onChange={handleInputChange}
-                                        rows="3"
+                                        rows={3}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                                         placeholder="Informações adicionais sobre o aluno (opcional)"
                                     />
