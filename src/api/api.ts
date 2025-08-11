@@ -336,18 +336,15 @@ export class StudentManagementApi {
     }
 
     // ===================
-    // ENHANCED REQUEST METHOD
+    // REQUEST METHOD
     // ===================
-    // Enhanced helper method for making API requests with auth
     private async request<T>(
         endpoint: string,
         options: RequestInit & { skipAuth?: boolean } = {}
     ): Promise<T> {
         const { skipAuth, ...fetchOptions } = options;
 
-        // Handle authentication
         if (!skipAuth) {
-            // Check if we need to refresh the token
             if (this.isAuthenticated() && this.needsTokenRefresh() && this.refreshToken) {
                 try {
                     await this.refreshAuthToken();
@@ -356,7 +353,6 @@ export class StudentManagementApi {
                 }
             }
 
-            // Check if we're authenticated for protected endpoints
             if (!this.isAuthenticated()) {
                 throw new StudentManagementApiError(401, {
                     code: 'NOT_AUTHENTICATED',
@@ -455,6 +451,10 @@ export class StudentManagementApi {
         const query = searchParams.toString();
         return query ? `?${query}` : '';
     }
+
+    // ===================
+    // USER MANAGEMENT
+    // ===================
 
     async createUser(userData: AuthUser): Promise<User> {
         return this.request<User>('/users', {
@@ -802,8 +802,4 @@ export class StudentManagementApi {
     }
 }
 
-// Create a default instance
-export const studentApi = new StudentManagementApi();
-
-// Export the class and default instance
 export default StudentManagementApi;
