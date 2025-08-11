@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { MainLayout } from "../layout/main.tsx";
 import { useAuth } from "../hooks/useAuth.tsx";
 import type {
@@ -19,7 +19,6 @@ import type {
 } from "../model/types";
 
 import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star } from "lucide-react";
-import {useNavigate} from "react-router-dom";
 import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";
 
 const SkeletonCard = ({ className = "" }) => (
@@ -147,11 +146,11 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
 
 const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
     const topThree = data.slice(0, 3);
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
-    const handleStudentClick = (studentId: string) => {
-        navigate(`/student/${studentId}`)
-    }
+    //const handleStudentClick = (studentId: string) => {
+    //    navigate(`/student/${studentId}`)
+    //}
 
     return (
         <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
@@ -482,13 +481,102 @@ const GenderPerformanceWidget = ({ data }: { data: GenderPerformanceAnalysis }) 
     );
 };
 
-const defaultEventSummary: EventSummary = { event_name: 'N/A', current_day: 0, total_days: 0, completion_percentage: 0, total_registered: 0, average_daily_attendance: 0, total_points_awarded: 0 };
-const defaultTodaySummary: TodaySummary = { present_count: 0, total_students: 0, attendance_rate: 0, points_awarded_today: 0, daily_goal_completion: 0 };
-const defaultRegistrationStats: RegistrationStats = { total_students: 0, by_gender: { male: 0, female: 0 } };
-const defaultEngagement: Engagement = { engagement_percent: 0, trend: 'stable', daily_average: 0, participation_rate: 0 };
-const defaultEventPredictions: EventPredictions = { completion_forecast: 0, projected_final_attendance: 0, remaining_days: 0, at_risk_participants: { likely_to_drop: 0 } };
-const defaultPointsDistribution: PointsDistribution = { distribution: [], average_points: 0, median_points: 0, top_score: 0 };
-const defaultGenderPerformance: GenderPerformanceAnalysis = { male: { average_points: 0, average_attendance_rate: 0 }, female: { average_points: 0, average_attendance_rate: 0 }, comparison: { points_difference: 0 } };
+const defaultEventSummary: EventSummary = {
+    event_name: 'N/A',
+    current_day: 0,
+    total_days: 0,
+    completion_percentage: 0,
+    total_registered: 0,
+    average_daily_attendance: 0,
+    total_points_awarded: 0,
+    start_date: "",
+    end_date: ""
+};
+const defaultTodaySummary: TodaySummary = {
+    present_count: 0, total_students: 0, attendance_rate: 0, points_awarded_today: 0, daily_goal_completion: 0,
+    day: 0,
+    date: "",
+    event_day_name: "",
+    top_performers_today: [],
+    activities_status:  {
+        completed: 0,
+        in_progress: 0,
+        upcoming: 0
+    }
+};
+const defaultRegistrationStats: { total_students: number; by_gender: { male: number; female: number } } = { total_students: 0, by_gender: { male: 0, female: 0 } };
+const defaultEngagement: Engagement = {
+    engagement_percent: 0, trend: 'stable', daily_average: 0, participation_rate: 0,
+    event_day: "",
+    days_elapsed: 0,
+    max_possible_points: 0,
+    awarded_points: 0,
+    by_gender: {
+        male:  {
+            engagement: 0,
+            participation: 0
+        },
+        female:  {
+            engagement: 0,
+            participation: 0
+        }
+    },
+    benchmark: 0,
+    performance: "above_benchmark"
+};
+const defaultEventPredictions: EventPredictions = {
+    completion_forecast: 0, projected_final_attendance: 0, remaining_days: 0, at_risk_participants: {
+        likely_to_drop: 0,
+        low_attendance: 0,
+        low_engagement: 0
+    },
+    projected_total_points: 0,
+    success_indicators:  {
+        on_track_for_goals: false,
+        engagement_trending: "",
+        attendance_stability: ""
+    },
+    final_day_projections:  {
+        expected_attendance: 0,
+        celebration_readiness: 0
+    }
+};
+const defaultPointsDistribution: PointsDistribution = {
+    distribution: [], average_points: 0, median_points: 0, top_score: 0,
+    total_points_awarded: 0,
+    days_elapsed: 0,
+    by_gender: {
+        male:  {
+            average: 0,
+            median: 0
+        },
+        female:  {
+            average: 0,
+            median: 0
+        }
+    }
+};
+const defaultGenderPerformance: GenderPerformanceAnalysis = { male: {
+        average_points: 0, average_attendance_rate: 0,
+        total_students: 0,
+        engagement_score: 0,
+        top_performer: {
+            name: "",
+            points: 0
+        }
+    }, female: {
+        average_points: 0, average_attendance_rate: 0,
+        total_students: 0,
+        engagement_score: 0,
+        top_performer: {
+            name: "",
+            points: 0
+        }
+    }, comparison: {
+        points_difference: 0,
+        attendance_difference: 0,
+        engagement_difference: 0
+    } };
 
 
 const DashboardPage: React.FC = () => {
@@ -618,6 +706,7 @@ const DashboardPage: React.FC = () => {
         isLoadingPointsDistribution || isLoadingClassPerformance || isLoadingGenderPerformance ||
         isLoadingPredictions;
 
+    // @ts-ignore
     return (
         <MainLayout>
             <div className="space-y-6 p-6 bg-gray-50 min-h-screen">
@@ -653,7 +742,7 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div className="lg:col-span-1">
                         <WidgetWrapper isLoading={isLoadingRegistrationStats || isLoadingRegistrationDemographics} skeleton={<SkeletonCard />}>
-                            {registrationStats && <RegistrationWidget data={registrationStats} demographics={registrationDemographics} />}
+                            {registrationStats && <RegistrationWidget data={registrationStats as RegistrationStats} demographics={registrationDemographics} />}
                         </WidgetWrapper>
                     </div>
                 </div>
