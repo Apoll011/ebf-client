@@ -29,8 +29,10 @@ const StudentInfo = () => {
     const [student, setStudent] = useState<Student | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdatingPoints, setIsUpdatingPoints] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [showPointsModal, setShowPointsModal] = useState(false);
     const [showAdjustModal, setShowAdjustModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [selectedPoints, setSelectedPoints] = useState<{ PRESENCE?: boolean; BOOK?: boolean; VERSICLE?: boolean; PARTICIPATION?: boolean; GUEST?: boolean; GAME?: boolean; }>({});
     const [adjustmentData, setAdjustmentData] = useState({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
@@ -86,6 +88,32 @@ const StudentInfo = () => {
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-lg border border-gray-200">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                                <div className="items-center justify-between">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="mb-4 w-12 h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                                        <div>
+                                            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+                                            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-16 bg-gray-200 rounded-lg animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-lg p-6 border border-gray-200">
+                            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4"></div>
+                            <div className="space-y-3">
+                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
+                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
+                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="lg:col-span-2 space-y-6">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {[...Array(4)].map((_, i) => (
@@ -124,31 +152,6 @@ const StudentInfo = () => {
                                         <div className="h-5 w-full bg-gray-200 rounded animate-pulse"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-lg border border-gray-200">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                                <div className="items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="mb-4 w-12 h-12 bg-gray-200 rounded-lg animate-pulse"></div>
-                                        <div>
-                                            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-                                            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
-                                        </div>
-                                    </div>
-                                    <div className="h-16 bg-gray-200 rounded-lg animate-pulse"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-lg p-6 border border-gray-200">
-                            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4"></div>
-                            <div className="space-y-3">
-                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
-                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
                             </div>
                         </div>
                     </div>
@@ -241,6 +244,18 @@ const StudentInfo = () => {
         }
     };
 
+    const deleteStudent = async () => {
+        setIsDeleting(true);
+        try {
+            await api.deleteStudent(student.id);
+            navigate('/list');
+        } catch {
+            showNotification(`Erro ao Deletar ${student.name}`, 'error');
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     const getWeekDates = () => {
         const today = new Date();
         const currentWeek = [];
@@ -299,7 +314,7 @@ const StudentInfo = () => {
     return (
         <MainLayout>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div className="space-y-6">
                                 <div className="bg-white rounded-lg border border-gray-200">
                                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -326,7 +341,7 @@ const StudentInfo = () => {
                                 </div>
 
                                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações</h3>
                                     <div className="space-y-3">
                                         <button
                                             onClick={openPointsModal}
@@ -341,6 +356,13 @@ const StudentInfo = () => {
                                         >
                                             <Settings className="w-4 h-4" />
                                             <span>Ajustar Pontos</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setShowDeleteModal(true)}
+                                            className="w-full bg-red-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-red-400 transition-colors duration-200 flex items-center justify-center space-x-2"
+                                        >
+                                            <XCircle className="w-4 h-4" />
+                                            <span>Deletar {student.name}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -419,7 +441,7 @@ const StudentInfo = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+            </div>
 
             {showPointsModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -599,6 +621,51 @@ const StudentInfo = () => {
                                 </div>
                             </div>
                         </div>
+            )}
+
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+                        <div className="p-6 border-b border-gray-200">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-xl font-semibold text-gray-900">Queres deletar {student.name}</h3>
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="text-gray-400 hover:text-gray-600"
+                                >
+                                    <XCircle className="w-6 h-6" />
+                                </button>
+                            </div>
+                            <p className="text-gray-600 text-sm mt-1">Esta ação não pode ser desfeita</p>
+                        </div>
+
+                        <div className="p-6 border-t border-gray-200 flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowDeleteModal(false);
+                                }}
+                                className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={deleteStudent}
+                                disabled={isDeleting}
+                                className="flex-1 py-3 px-4 bg-orange-600 text-white rounded-lg hover:bg-orange-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                            >
+                                {isDeleting ? (
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <XCircle className="w-4 h-4" />
+                                        <span>Deletar</span>
+                                    </>
+                                )}
+
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {notification && (
