@@ -227,12 +227,49 @@ const StudentListPage: React.FC = () => {
                 </div>
 
                 { loading && (
-                    <div className="mt-20 bg-gray-50 flex items-center justify-center">
-                        <div className="flex flex-col items-center space-y-4">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
-                            <p className="text-gray-600">Carregando estudantes...</p>
+                    <>
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 animate-pulse">
+                            <div className="px-6 py-4 border-b border-gray-200">
+                                <div className="flex items-center justify-between">
+                                    <div className="h-5 bg-gray-200 rounded w-48"></div>
+                                    <div className="flex items-center space-x-4">
+                                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-12"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-14"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {Array.from({ length: 8 }).map((_, idx) => (
+                                    <div key={idx} className="p-4 border border-gray-200 rounded-lg bg-white">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div className="flex-1 min-w-0">
+                                                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div className="h-5 bg-gray-200 rounded w-16"></div>
+                                            <div className="h-4 bg-gray-200 rounded w-10"></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="px-6 py-4 border-t border-gray-200">
+                                <div className="flex items-center justify-between">
+                                    <div className="h-4 bg-gray-200 rounded w-48"></div>
+                                    <div className="flex items-center space-x-2">
+                                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-20"></div>
+                                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
+                    </>
                 )}
                 { !loading && (
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
