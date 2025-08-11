@@ -117,6 +117,7 @@ const StudentInfo = () => {
     };
 
     const adjustPoints = async () => {
+        setIsUpdatingPoints(true);
         try {
             await api.adjustPoints(student.id, adjustmentData);
             showNotification('Ajuste de pontos realizado com sucesso!');
@@ -125,6 +126,8 @@ const StudentInfo = () => {
             await updateStudentInBackground();
         } catch (error) {
             showNotification('Erro ao ajustar pontos', 'error');
+        } finally {
+            setIsUpdatingPoints(false);
         }
     };
 
@@ -280,6 +283,52 @@ const StudentInfo = () => {
 
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="space-y-6">
+                                <div className="bg-white rounded-lg border border-gray-200">
+                                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                                        <div className="items-center justify-between">
+                                            <div className="mb-4 flex items-center space-x-4">
+                                                <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                                                    {student.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <h1 className="text-2xl font-semibold text-gray-900">{student.name}</h1>
+                                                    <p className="text-gray-600 text-sm">Turma: {student.group}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-3">
+                                                <div className="bg-gray-800 text-white px-6 w-[100%] py-3 rounded-lg">
+                                                    <div className="text-center">
+                                                        <div className="text-2xl font-bold">{student.total_points}</div>
+                                                        <div className="text-xs opacity-90">PONTOS TOTAIS</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-lg p-6 border border-gray-200">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
+                                    <div className="space-y-3">
+                                        <button
+                                            onClick={openPointsModal}
+                                            className="w-full bg-gray-800 text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center justify-center space-x-2"
+                                        >
+                                            <Award className="w-4 h-4" />
+                                            <span>Atribuir Pontos</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setShowAdjustModal(true)}
+                                            className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2"
+                                        >
+                                            <Settings className="w-4 h-4" />
+                                            <span>Ajustar Pontos</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="lg:col-span-2 space-y-6">
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div className="bg-white rounded-lg p-6 border border-gray-200">
@@ -294,7 +343,7 @@ const StudentInfo = () => {
                                     <div className="bg-white rounded-lg p-6 border border-gray-200">
                                         <Users className="w-6 h-6 text-gray-600 mb-2" />
                                         <div className="text-lg font-semibold text-gray-900">{student.group}</div>
-                                        <div className="text-sm text-gray-600">grupo</div>
+                                        <div className="text-sm text-gray-600">Turma</div>
                                     </div>
                                     <div className="bg-white rounded-lg p-6 border border-gray-200">
                                         <Calendar className="w-6 h-6 text-gray-600 mb-2" />
@@ -349,52 +398,6 @@ const StudentInfo = () => {
                                                 </div>
                                             </div>
                                         )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div className="bg-white rounded-lg border border-gray-200">
-                                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                                        <div className="items-center justify-between">
-                                            <div className="mb-4 flex items-center space-x-4">
-                                                <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                                                    {student.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <h1 className="text-2xl font-semibold text-gray-900">{student.name}</h1>
-                                                    <p className="text-gray-600 text-sm">Turma: {student.group}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center space-x-3">
-                                                <div className="bg-gray-800 text-white px-6 w-[100%] py-3 rounded-lg">
-                                                    <div className="text-center">
-                                                        <div className="text-2xl font-bold">{student.total_points}</div>
-                                                        <div className="text-xs opacity-90">PONTOS TOTAIS</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
-                                    <div className="space-y-3">
-                                        <button
-                                            onClick={openPointsModal}
-                                            className="w-full bg-gray-800 text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center justify-center space-x-2"
-                                        >
-                                            <Award className="w-4 h-4" />
-                                            <span>Atribuir Pontos</span>
-                                        </button>
-                                        <button
-                                            onClick={() => setShowAdjustModal(true)}
-                                            className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2"
-                                        >
-                                            <Settings className="w-4 h-4" />
-                                            <span>Ajustar Pontos</span>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -466,7 +469,7 @@ const StudentInfo = () => {
                                                                 : 'border-gray-300'
                                                         }`}>
                                                             {selectedPoints[category.key] && (
-                                                                <CheckCircle className="w-4 h-4" />
+                                                                <CheckCircle className="w-4 h-4 text-black" />
                                                             )}
                                                         </div>
                                                     </div>
@@ -564,11 +567,17 @@ const StudentInfo = () => {
                                     </button>
                                     <button
                                         onClick={adjustPoints}
-                                        disabled={!adjustmentData.reason.trim() || adjustmentData.amount === 0}
-                                        className="flex-1 py-3 px-4 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                                        disabled={!adjustmentData.reason.trim() || adjustmentData.amount === 0 || isUpdatingPoints}
+                                        className="flex-1 py-3 px-4 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                                     >
-                                        <Settings className="w-4 h-4" />
-                                        <span>Ajustar</span>
+                                        {isUpdatingPoints ? (
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Settings className="w-4 h-4" />
+                                                <span>Ajustar</span>
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                             </div>
