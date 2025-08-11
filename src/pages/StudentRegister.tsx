@@ -143,7 +143,10 @@ const StudentRegistration = () => {
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                     >
-                                        <option defaultChecked={true} value="male">Masculino</option>
+                                        <option value="" disabled>
+                                            Selecione o gênero
+                                        </option>
+                                        <option value="male">Masculino</option>
                                         <option value="female">Feminino</option>
                                     </select>
                                 </div>
