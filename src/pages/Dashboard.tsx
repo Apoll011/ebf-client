@@ -18,7 +18,7 @@ import type {
     EventPredictions, DailyAttendance
 } from "../model/types";
 
-import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star, User } from "lucide-react";
+import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, User } from "lucide-react";
 import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -564,23 +564,6 @@ const defaultEngagement: Engagement = {
     },
     benchmark: 0,
     performance: "above_benchmark"
-};
-const defaultEventPredictions: EventPredictions = {
-    completion_forecast: 0, projected_final_attendance: 0, remaining_days: 0, at_risk_participants: {
-        likely_to_drop: 0,
-        low_attendance: 0,
-        low_engagement: 0
-    },
-    projected_total_points: 0,
-    success_indicators:  {
-        on_track_for_goals: false,
-        engagement_trending: "",
-        attendance_stability: ""
-    },
-    final_day_projections:  {
-        expected_attendance: 0,
-        celebration_readiness: 0
-    }
 };
 const defaultPointsDistribution: PointsDistribution = {
     distribution: [], average_points: 0, median_points: 0, top_score: 0,
