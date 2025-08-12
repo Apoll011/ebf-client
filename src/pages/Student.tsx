@@ -52,7 +52,7 @@ const StudentInfo = () => {
 
     useEffect(() => {
         if (studentId) {
-            loadStudent();
+            loadStudent().then();
         }
         else {
             navigate('/');
@@ -431,7 +431,7 @@ const StudentInfo = () => {
                                                 <p className="text-lg font-semibold text-gray-900">{student.parent_name}</p>
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium text-gray-600 mb-1 block flex items-center space-x-2">
+                                                <label className="text-sm font-medium text-gray-600 mb-1 flex items-center space-x-2">
                                                     <Phone className="w-4 h-4" />
                                                     <span>Telefone</span>
                                                 </label>

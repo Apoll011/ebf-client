@@ -8,7 +8,7 @@ interface CacheItem<T> {
 }
 
 class DashboardCache {
-    private cache = new Map<string, CacheItem<any>>();
+    private cache = new Map<string, CacheItem<unknown>>();
 
     set<T>(key: string, data: T): void {
         this.cache.set(key, {
@@ -27,7 +27,7 @@ class DashboardCache {
             return null;
         }
 
-        return item.data;
+        return item.data as T;
     }
 
     clear(): void {
@@ -76,7 +76,7 @@ export const useWidgetDataWithCache = <T>(
             }
         };
 
-        fetchData();
+        fetchData().then();
     }, [key, forceRefresh]);
 
     return { data, isLoading, error };

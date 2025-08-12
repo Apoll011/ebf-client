@@ -35,7 +35,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            handleSubmit();
+            handleSubmit().then();
         }
     };
 
@@ -187,7 +187,7 @@ const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess:
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            handleSubmit();
+            handleSubmit().then();
         }
     };
 

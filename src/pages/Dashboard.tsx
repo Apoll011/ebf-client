@@ -15,7 +15,7 @@ import type {
     DailyPointsTrend,
     PointsDistribution,
     GenderPerformanceAnalysis,
-    EventPredictions, DailyAttendance
+    DailyAttendance
 } from "../model/types";
 
 import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, User } from "lucide-react";
@@ -723,7 +723,6 @@ const DashboardPage: React.FC = () => {
         isLoadingEngagement || isLoadingPointsCategory || isLoadingDailyPointsTrends ||
         isLoadingPointsDistribution || isLoadingClassPerformance || isLoadingGenderPerformance;
 
-    // @ts-ignore
     return (
         <MainLayout>
             <div className="space-y-6 p-6">

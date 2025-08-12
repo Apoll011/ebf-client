@@ -53,7 +53,7 @@ const StudentListPage: React.FC = () => {
             }
         };
 
-        fetchStudents();
+        fetchStudents().then();
     }, [filters, api]);
 
     const filteredStudents = useMemo(() => {

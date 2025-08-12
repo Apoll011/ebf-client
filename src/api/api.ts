@@ -62,7 +62,10 @@ import type // Authentication interfaces
 export class StudentManagementApiError extends Error {
     public readonly statusCode: number;
     public readonly errorCode: string;
-    public readonly details?: any;
+    public readonly details?: {
+        field?: string
+        value?: never
+    };
 
     constructor(statusCode: number, error: ApiError['error']) {
         super(error.message);
@@ -368,7 +371,6 @@ export class StudentManagementApi {
         };
 
         if (!skipAuth && this.authToken) {
-            // @ts-ignore
             headers['Authorization'] = `Bearer ${this.authToken}`;
         }
 
@@ -441,7 +443,7 @@ export class StudentManagementApi {
         }
     }
 
-    private buildQueryString(params: Record<string, any>): string {
+    private buildQueryString(params: AttendanceQuery | EngagementQuery | PerformanceRankingsQuery | PointsSummaryQuery | DailyPointsQuery | Record<string, string>): string {
         const searchParams = new URLSearchParams();
         Object.entries(params).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {

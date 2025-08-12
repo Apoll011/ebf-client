@@ -6,7 +6,6 @@ import StudentRegistration from "./pages/StudentRegister.tsx";
 import StudentInfo from "./pages/Student.tsx";
 import StudentList from "./pages/StudentList.tsx";
 import {FlagIcon} from "lucide-react";
-import React from "react";
 
 function Error404() {
     const navigate = useNavigate();
@@ -17,7 +16,7 @@ function Error404() {
                 <h1 className="mt-10 text-3xl leading-snug md:text-4xl text-white">Erro 404 <br /> Página não encontrada.</h1>
                 <button
                     onClick={() => navigate('/')}
-                    className={`px-10 mt-4 cursor-pointer items-center space-x-3 px-3 py-2 rounded-md text-base font-medium transition-colors text-left text-white bg-gray-800 hover:bg-gray-900`}
+                    className={`px-10 mt-4 cursor-pointer items-center space-x-3 py-2 rounded-md text-base font-medium transition-colors text-left text-white bg-gray-800 hover:bg-gray-900`}
                 >
                     <span>Página Inicial</span>
                 </button>
