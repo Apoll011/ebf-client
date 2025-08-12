@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Users, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Printer } from 'lucide-react';
+import { Search, Filter, Users, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Printer, Award } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.tsx';
 import type {AgeGroup, Gender, Order, SortBy, StudentListItem, StudentsListQuery} from '../model/types';
 import {MainLayout} from "../layout/main.tsx";
+import {generatePDFContent} from "../util/print.ts";
 
 const StudentListPage: React.FC = () => {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ const StudentListPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showFilters, setShowFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
+    const [isLoadingAgeActions, setIsLoadingAgeActions] = useState(false);
     const [filters, setFilters] = useState<StudentsListQuery>({
         sort_by: 'name',
         order: 'asc'
@@ -75,8 +77,52 @@ const StudentListPage: React.FC = () => {
         setCurrentPage(0);
     };
 
-    const handlePrintPlanilha = () => {
-        console.log('Imprimir Planilia for age group:', filters.age_group);
+    const getStudentsForAgeGroupActions = async () => {
+        if (!filters.age_group) {
+            return [];
+        }
+        setIsLoadingAgeActions(true);
+        const students = await api.getStudents({
+            age_group: filters.age_group,
+            sort_by: 'name',
+            order: 'asc'
+        });
+        setIsLoadingAgeActions(false);
+        return students;
+    }
+
+    const handlePrintPlanilha = async () => {
+        const studentsForAgeGroup: StudentListItem[] = await getStudentsForAgeGroupActions();
+        if (studentsForAgeGroup.length === 0) {
+            alert('Nenhum estudante encontrado para a turma selecionada.');
+            return;
+        }
+
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert('Popup bloqueado! Por favor, permita popups para imprimir.');
+            return;
+        }
+
+        const htmlContent = generatePDFContent(studentsForAgeGroup, filters.age_group);
+
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+
+        printWindow.onload = () => {
+            setTimeout(() => {
+                printWindow.print();
+            }, 250);
+        };
+    };
+
+    const handleAssignPoints = async () => {
+        const studentsForAgeGroup = await getStudentsForAgeGroupActions();
+        if (studentsForAgeGroup.length === 0) {
+            alert('Nenhum estudante encontrado para a turma selecionada.');
+            return;
+        }
+        console.log('Atribuir pontos para estudantes:', studentsForAgeGroup);
     };
 
     const getGenderLabel = (gender: Gender) => {
@@ -106,7 +152,6 @@ const StudentListPage: React.FC = () => {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
                     <div className="p-6">
                         <div className="flex flex-col sm:flex-row gap-4">
-                            {/* Search */}
                             <div className="flex-1 relative">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                                 <input
@@ -118,7 +163,6 @@ const StudentListPage: React.FC = () => {
                                 />
                             </div>
 
-                            {/* Filter Toggle */}
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
                                 className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
@@ -128,7 +172,6 @@ const StudentListPage: React.FC = () => {
                                 <ChevronDown className={`h-4 w-4 transform transition-transform ${showFilters ? 'rotate-180' : ''}`} />
                             </button>
 
-                            {/* Print Button - Only show if age_group is selected */}
                             {filters.age_group && (
                                 <button
                                     onClick={handlePrintPlanilha}
@@ -138,23 +181,30 @@ const StudentListPage: React.FC = () => {
                                     <span>Imprimir Planilha</span>
                                 </button>
                             )}
+                            {filters.age_group && (
+                                <button
+                                    onClick={handleAssignPoints}
+                                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                                >
+                                    <Award className="h-4 w-4" />
+                                    <span>Atribuir Pontos do Dia</span>
+                                </button>
+                            )}
                         </div>
 
-                        {/* Filters */}
                         {showFilters && (
                             <div className="mt-4 pt-4 border-t border-gray-200">
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    {/* Age Group Filter */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Grupo Etário
+                                            Turmas
                                         </label>
                                         <select
                                             value={filters.age_group || ''}
                                             onChange={(e) => handleFilterChange('age_group', e.target.value)}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none"
                                         >
-                                            <option value="">Todos os grupos</option>
+                                            <option value="">Todos as Turmas</option>
                                             <option value="0-6">0-6 anos</option>
                                             <option value="7-9">7-9 anos</option>
                                             <option value="10-12">10-12 anos</option>
@@ -393,6 +443,14 @@ const StudentListPage: React.FC = () => {
                                 </div>
                             </div>
                         )}
+                    </div>
+                )}
+                { isLoadingAgeActions && (
+                    <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50">
+                        <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                            <p className="mt-4 text-lg font-semibold">Carregando Dados...</p>
+                        </div>
                     </div>
                 )}
             </div>
