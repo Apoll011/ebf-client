@@ -40,12 +40,12 @@ const StudentInfo = () => {
     const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
 
     const pointCategories = [
-        { key: 'PRESENCE', label: 'Presença', icon: UserCheck, color: 'emerald', points: 10 },
-        { key: 'BOOK', label: 'Trouxe Livro', icon: BookOpen, color: 'blue', points: 5 },
-        { key: 'VERSICLE', label: 'Versículo', icon: MessageSquare, color: 'violet', points: 15 },
-        { key: 'PARTICIPATION', label: 'Participação', icon: Target, color: 'amber', points: 8 },
-        { key: 'GUEST', label: 'Trouxe Convidado', icon: Gift, color: 'rose', points: 20 },
-        { key: 'GAME', label: 'Jogo', icon: Trophy, color: 'indigo', points: 12 }
+        { key: 'presence', label: 'Presença', icon: UserCheck, color: 'emerald', points: 50 },
+        { key: 'book', label: 'Trouxe Livro', icon: BookOpen, color: 'blue', points: 20 },
+        { key: 'versicle', label: 'Versículo', icon: MessageSquare, color: 'violet', points: 30 },
+        { key: 'participation', label: 'Participação', icon: Target, color: 'amber', points: 40 },
+        { key: 'guest', label: 'Trouxe Convidado', icon: Gift, color: 'rose', points: 10 },
+        { key: 'game', label: 'Jogo', icon: Trophy, color: 'indigo', points: 15 }
     ];
 
     if (!studentId) {
@@ -199,7 +199,7 @@ const StudentInfo = () => {
         const points = await getPointsForDate(selectedDate);
         const booleanPoints = {};
         pointCategories.forEach(cat => {
-            booleanPoints[cat.key] = Boolean(points[cat.key]);
+            booleanPoints[cat.key.toLowerCase()] = Boolean(points[cat.key]);
         });
         setSelectedPoints(booleanPoints);
         setShowPointsModal(true);
