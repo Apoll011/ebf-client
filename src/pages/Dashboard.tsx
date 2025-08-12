@@ -487,21 +487,33 @@ const DailyPointsTrendWidget = ({ data }: { data: DailyPointsTrend[] }) => {
 
 const PointsDistributionWidget = ({ data }: { data: PointsDistribution }) => {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-gray-100 p-6 flex flex-col">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Distribuição de Pontos</h3>
                 <PieChart className="h-5 w-5 text-gray-600" />
             </div>
-            <div className="flex items-end h-40 space-x-2">
-                {data.distribution.map(range => (
-                    <div key={range.range} className="w-full text-center group">
-                        <div className="bg-indigo-400 rounded-t transition-all duration-300 ease-out group-hover:bg-indigo-500" style={{ height: `${range.percentage}%` }} title={`${range.student_count} alunos`}></div>
-                        <p className="text-xs text-gray-500 mt-1">{range.range}</p>
-                    </div>
-                ))}
-                 {data.distribution.length === 0 && <p className="w-full text-sm text-gray-500 text-center self-center">Não há distribuição de pontos para mostrar.</p>}
+            <div className="flex items-end mt-15 h-40 space-x-2">
+                {data.distribution.length > 0 ? (
+                    data.distribution.map(range => (
+                        <div key={range.range} className="flex-1 text-center group">
+                            <div
+                                className="bg-indigo-400 rounded-t transition-all duration-300 ease-out group-hover:bg-indigo-500 mx-auto text-white align-center items-center justify-center flex"
+                                style={{
+                                    height: `${range.percentage/100 * 200 + 6}px`,
+                                    width: "80%"
+                                }}
+                                title={`${range.student_count} alunos`}
+                            > {range.percentage == 0? '' : range.percentage}{range.percentage == 0? '' : '%'} </div>
+                            <p className="text-xs text-gray-500 mt-1 truncate">{range.range}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p className="w-full text-sm text-gray-500 text-center self-center">
+                        Não há distribuição de pontos para mostrar.
+                    </p>
+                )}
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-4 text-center">
+            <div className="grid grid-cols-2 gap-4 mt-4 text-center">
                 <div>
                     <p className="text-xl font-bold text-indigo-600">{data.average_points.toFixed(0)}</p>
                     <p className="text-xs text-gray-600">Média</p>
@@ -509,10 +521,6 @@ const PointsDistributionWidget = ({ data }: { data: PointsDistribution }) => {
                 <div>
                     <p className="text-xl font-bold text-indigo-600">{data.median_points}</p>
                     <p className="text-xs text-gray-600">Mediana</p>
-                </div>
-                <div>
-                    <p className="text-xl font-bold text-indigo-600">{data.top_score}</p>
-                    <p className="text-xs text-gray-600">Máx.</p>
                 </div>
             </div>
         </div>
