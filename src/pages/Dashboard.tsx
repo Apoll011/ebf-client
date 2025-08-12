@@ -18,7 +18,7 @@ import type {
     EventPredictions, DailyAttendance
 } from "../model/types";
 
-import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star } from "lucide-react";
+import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star, User } from "lucide-react";
 import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -128,7 +128,7 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
                                     <span className="text-gray-500">{stats.present} / {stats.total}</span>
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div className={`${classColors[classGroup as keyof typeof classColors] || 'bg-gray-400'} h-1.5 rounded-full transition-all duration-500 ease-out`} style={{ width: `${stats.rate * 100}%` }}></div>
+                                    <div className={`${classColors[classGroup as keyof typeof classColors] || 'bg-gray-400'} h-1.5 rounded-full transition-all duration-500 ease-out`} style={{ width: `${stats.rate}%` }}></div>
                                 </div>
                             </div>
                         ))}
@@ -368,31 +368,89 @@ const EventPredictionsWidget = ({ data }: { data: EventPredictions }) => {
     );
 };
 
-const DailyAttendanceWidget = ({ data }: { data: DailyAttendance[] }) => {
-    const maxAttendance = Math.max(...data.map(d => d.attendance_count), 1);
+export const DailyAttendanceWidget = ({ data }: { data: DailyAttendance[] }) => {
+    const today = new Date().toISOString().split("T")[0];
 
+    const getColor = (rate: number) => {
+        if (rate >= 90) return "text-green-500";
+        if (rate >= 70) return "text-yellow-500";
+        return "text-red-500";
+    };
+    
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full flex flex-col">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Presença Diária</h3>
                 <Calendar className="h-5 w-5 text-gray-600" />
             </div>
-            <div className="flex items-end h-48 space-x-2 border-b border-l border-gray-200 p-2">
-                {data.map(day => (
-                    <div key={day.day} className="w-full flex flex-col justify-end items-center group">
-                        <div className="bg-blue-500 rounded-t transition-all duration-300 ease-out group-hover:bg-blue-600" style={{ height: `${(day.attendance_count / maxAttendance) * 100}%` }} title={`${day.attendance_count} alunos`}></div>
-                        <p className="text-xs text-gray-500 mt-1">Dia {day.day}</p>
-                    </div>
-                ))}
-                 {data.length === 0 && <p className="w-full text-sm text-gray-500 text-center self-center">Ainda não há dados de presença.</p>}
-            </div>
+
+            {data.length > 0 ? (
+                <div className="flex overflow-x-auto space-x-4 pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                    {data.map(day => (
+                        <div
+                            key={day.day}
+                            className={`flex-shrink-0 w-32 bg-gray-50 rounded-lg border transition-all duration-300 p-4 flex flex-col items-center
+                                ${day.date === today ? "shadow-md border-blue-400" : "border-gray-200"}`}
+                        >
+                            {/* Circular progress */}
+                            <div className="relative w-20 h-20 flex items-center justify-center">
+                                <svg className="absolute inset-0" viewBox="0 0 36 36">
+                                    <path
+                                        className="text-gray-200"
+                                        strokeWidth="3.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        d="M18 2.0845
+                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <path
+                                        className={getColor(day.attendance_rate)}
+                                        strokeWidth="3.5"
+                                        strokeDasharray={`${day.attendance_rate}, 100`}
+                                        fill="none"
+                                        strokeLinecap="round"
+                                        stroke="currentColor"
+                                        d="M18 2.0845
+                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                </svg>
+                                <span className="text-sm font-semibold">
+                                    {day.attendance_rate}%
+                                </span>
+                            </div>
+
+                            <p className={`mt-2 text-sm font-medium ${day.date === today ? "text-blue-600 font-semibold" : "text-gray-700"}`}>
+                                Dia {day.day}
+                            </p>
+
+                            <p className="text-xs text-gray-500 mb-1">
+                                {day.attendance_count}/{day.total_students}
+                            </p>
+
+                            <div className="mt-1 text-xs text-gray-500 space-y-0.5 text-center">
+                                <span className="flex items-center justify-center gap-1">
+                                    Meninos <User className="h-3 w-3 text-blue-500" /> {day.male_attendance}
+                                </span>
+                                <span className="flex items-center justify-center gap-1">
+                                    Meninas <User className="h-3 w-3 text-pink-500" /> {day.female_attendance}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-sm text-gray-500 text-center flex-1 flex items-center justify-center">
+                    Ainda não há dados de presença.
+                </p>
+            )}
         </div>
     );
 };
 
 const DailyPointsTrendWidget = ({ data }: { data: DailyPointsTrend[] }) => {
     const maxPoints = Math.max(...data.map(d => d.total_points), 1);
-
     return (
         <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
             <div className="flex items-center justify-between mb-4">
@@ -595,7 +653,7 @@ const DashboardPage: React.FC = () => {
 
     const { data: dailyAttendance, isLoading: isLoadingDailyAttendance } = useWidgetDataWithCache(
         'dailyAttendance',
-        () => api.getDailyAttendance(),
+        () => api.fetchAttendanceDays(),
         [],
         forceRefresh
     );

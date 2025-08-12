@@ -591,6 +591,25 @@ export class StudentManagementApi {
         return this.request<DailyAttendance[]>(`/stats/attendance/daily${queryString}`);
     }
 
+    async fetchAttendanceDays(): Promise<DailyAttendance[]> {
+        const today = new Date();
+        const dayOfWeek = today.getDay() === 0 ? 7 : today.getDay(); // Sunday=7
+
+        const maxDay = dayOfWeek >= 5 ? 5 : dayOfWeek;
+
+        const promises = [];
+
+        for (let day = 1; day <= maxDay; day++) {
+            const queryString = this.buildQueryString({ day });
+            promises.push(this.request<DailyAttendance[]>(`/stats/attendance/daily${queryString}`));
+        }
+
+        const results = await Promise.all(promises);
+        return results.flat();
+    }
+
+
+
     /**
      * Get today's detailed statistics
      */
