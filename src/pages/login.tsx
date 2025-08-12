@@ -340,7 +340,7 @@ const AuthScreen = () => {
     };
     
     return (
-        <div className="min-h-screen bg-[url('wallpaper.webp')] bg-cover bg-no-repeat flex items-center justify-between p-6 relative">
+        <div className="min-h-screen bg-[url('/wallpaper.webp')] bg-cover bg-no-repeat flex items-center justify-between p-6 relative">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 transition-all duration-300">
                     <div className="transition-opacity duration-500">
