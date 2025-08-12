@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { useState, useEffect } from 'react';
+import {useState, useEffect, type ForwardRefExoticComponent, type RefAttributes} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {
     Calendar,
@@ -16,10 +15,10 @@ import {
     Trophy,
     Target,
     UserCheck,
-    Gift
+    Gift, type LucideProps
 } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth.tsx";
-import type {Student} from "../model/types.ts";
+import type {AwardPointsRequest, Student} from "../model/types.ts";
 import {MainLayout} from "../layout/main.tsx";
 
 const StudentInfo = () => {
@@ -35,11 +34,14 @@ const StudentInfo = () => {
     const [showAdjustModal, setShowAdjustModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-    const [selectedPoints, setSelectedPoints] = useState<{ PRESENCE?: boolean; BOOK?: boolean; VERSICLE?: boolean; PARTICIPATION?: boolean; GUEST?: boolean; GAME?: boolean; }>({});
+    const [selectedPoints, setSelectedPoints] = useState<{ presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; }>({});
     const [adjustmentData, setAdjustmentData] = useState({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
     const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
 
-    const pointCategories = [
+    type colors_name = 'emerald' | 'blue' | 'violet' | 'amber' | 'rose' | 'indigo';
+    type point_category = 'presence' | 'book' | 'versicle' | 'participation' | 'guest' | 'game'
+
+    const pointCategories: {key: point_category; label: string; icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>; color: colors_name; points: number}[] = [
         { key: 'presence', label: 'Presença', icon: UserCheck, color: 'emerald', points: 50 },
         { key: 'book', label: 'Trouxe Livro', icon: BookOpen, color: 'blue', points: 20 },
         { key: 'versicle', label: 'Versículo', icon: MessageSquare, color: 'violet', points: 30 },
@@ -48,16 +50,21 @@ const StudentInfo = () => {
         { key: 'game', label: 'Jogo', icon: Trophy, color: 'indigo', points: 15 }
     ];
 
-    if (!studentId) {
-        navigate('/');
-        return null;
-    }
-
     useEffect(() => {
         if (studentId) {
             loadStudent();
         }
+        else {
+            navigate('/');
+        }
     }, [studentId]);
+
+    if (!studentId) {
+        navigate('/');
+        return (
+            <>Error Loading Student...</>
+        );
+    }
 
     const showNotification = (message: string, type = 'success') => {
         setNotification({ message, type });
@@ -196,16 +203,16 @@ const StudentInfo = () => {
     };
 
     const openPointsModal = async () => {
-        const points = await getPointsForDate(selectedDate);
-        const booleanPoints = {};
+        const points: { presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; } = await getPointsForDate(selectedDate);
+        const booleanPoints: { presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; } = {};
         pointCategories.forEach(cat => {
-            booleanPoints[cat.key.toLowerCase()] = Boolean(points[cat.key]);
+            booleanPoints[cat.key] = Boolean(points[cat.key]);
         });
         setSelectedPoints(booleanPoints);
         setShowPointsModal(true);
     };
 
-    const togglePoint = (category) => {
+    const togglePoint = (category: point_category) => {
         setSelectedPoints(prev => ({
             ...prev,
             [category]: !prev[category]
@@ -215,7 +222,7 @@ const StudentInfo = () => {
     const savePoints = async () => {
         setIsUpdatingPoints(true);
         try {
-            const pointsData = {
+            const pointsData: AwardPointsRequest = {
                 date: selectedDate,
                 points: selectedPoints
             };
@@ -277,8 +284,9 @@ const StudentInfo = () => {
         return currentWeek;
     };
 
-    const getColorClass = (color, variant = 'bg') => {
-        const colors = {
+    type color_variant = 'bg' | 'button' | 'icon'
+    const getColorClass = (color: colors_name, variant: color_variant = 'bg') => {
+        const colors  = {
             emerald: {
                 bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
                 button: 'bg-emerald-500 hover:bg-emerald-600',

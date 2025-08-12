@@ -55,12 +55,12 @@ export interface DailyPoints {
 export interface AwardPointsRequest {
     date: string;
     points: {
-        PRESENCE?: boolean;
-        BOOK?: boolean;
-        VERSICLE?: boolean;
-        PARTICIPATION?: boolean;
-        GUEST?: boolean;
-        GAME?: boolean;
+        presence?: boolean;
+        book?: boolean;
+        versicle?: boolean;
+        participation?: boolean;
+        guest?: boolean;
+        game?: boolean;
     };
 }
 

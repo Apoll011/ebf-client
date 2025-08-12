@@ -42,7 +42,6 @@ const StudentRegistration = () => {
             return;
         }
 
-        // Phone validation for Cape Verde
         const phoneRegex = /^[95]\d{2}\s\d{2}\s\d{2}$/;
         if (!phoneRegex.test(formData.parent_phone)) {
             showNotification('Formato de telefone inválido. Use: 9XX XX XX ou 5XX XX XX', 'error');
