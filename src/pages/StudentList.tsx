@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Users, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Printer, Award } from 'lucide-react';
+import {
+    Search,
+    Filter,
+    Users,
+    ArrowUpDown,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    Printer,
+    Award,
+    XCircle, CheckCircle
+} from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.tsx';
 import type {AgeGroup, Gender, Order, SortBy, StudentListItem, StudentsListQuery} from '../model/types';
 import {MainLayout} from "../layout/main.tsx";
@@ -16,10 +27,16 @@ const StudentListPage: React.FC = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [isLoadingAgeActions, setIsLoadingAgeActions] = useState(false);
+    const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
     const [filters, setFilters] = useState<StudentsListQuery>({
         sort_by: 'name',
         order: 'asc'
     });
+
+    const showNotification = (message: string, type = 'success') => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 5000);
+    };
 
     const studentsPerPage = 10;
 
@@ -93,14 +110,14 @@ const StudentListPage: React.FC = () => {
 
     const handlePrintPlanilha = async () => {
         const studentsForAgeGroup: StudentListItem[] = await getStudentsForAgeGroupActions();
-        if (studentsForAgeGroup.length === 0) {
-            alert('Nenhum estudante encontrado para a turma selecionada.');
+        if (studentsForAgeGroup.length === 0 || !filters.age_group) {
+            showNotification('Nenhum estudante encontrado para a turma selecionada.', 'error');
             return;
         }
 
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
-            alert('Popup bloqueado! Por favor, permita popups para imprimir.');
+            showNotification('Popup bloqueado! Por favor, permita popups para imprimir.', 'error');
             return;
         }
 
@@ -115,6 +132,7 @@ const StudentListPage: React.FC = () => {
             }, 250);
         };
     };
+
 
     const handleAssignPoints = async () => {
         const studentsForAgeGroup = await getStudentsForAgeGroupActions();
@@ -175,7 +193,7 @@ const StudentListPage: React.FC = () => {
                             {filters.age_group && (
                                 <button
                                     onClick={handlePrintPlanilha}
-                                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                                    className="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors shadow-sm"
                                 >
                                     <Printer className="h-4 w-4" />
                                     <span>Imprimir Planilha</span>
@@ -184,7 +202,7 @@ const StudentListPage: React.FC = () => {
                             {filters.age_group && (
                                 <button
                                     onClick={handleAssignPoints}
-                                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                                    className="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors shadow-sm"
                                 >
                                     <Award className="h-4 w-4" />
                                     <span>Atribuir Pontos do Dia</span>
@@ -450,6 +468,36 @@ const StudentListPage: React.FC = () => {
                         <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
                             <p className="mt-4 text-lg font-semibold">Carregando Dados...</p>
+                        </div>
+                    </div>
+                )}
+                {notification && (
+                    <div className={`fixed top-6 right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
+                        notification.type === 'error'
+                            ? 'bg-red-50 border-red-200 text-red-800'
+                            : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    }`}>
+                        <div className="flex items-center space-x-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                notification.type === 'error'
+                                    ? 'bg-red-100 text-red-600'
+                                    : 'bg-emerald-100 text-emerald-600'
+                            }`}>
+                                {notification.type === 'error' ? (
+                                    <XCircle className="w-4 h-4" />
+                                ) : (
+                                    <CheckCircle className="w-4 h-4" />
+                                )}
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-medium text-sm">{notification.message}</p>
+                            </div>
+                            <button
+                                onClick={() => setNotification(null)}
+                                className="text-current hover:bg-black/5 rounded-lg p-1 transition-colors"
+                            >
+                                <XCircle className="w-4 h-4" />
+                            </button>
                         </div>
                     </div>
                 )}

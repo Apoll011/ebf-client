@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from "../hooks/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
 import {MainLayout} from "../layout/main.tsx";
+import {CheckCircle, XCircle} from "lucide-react";
 
 const StudentRegistration = () => {
     const { api } = useAuth();
@@ -225,17 +226,33 @@ const StudentRegistration = () => {
                 </div>
 
             {notification && (
-                <div className={`fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transition-all duration-300 ${
-                        notification.type === 'error'
-                            ? 'bg-red-50 border border-red-200 text-red-800'
-                            : 'bg-green-50 border border-green-200 text-green-800'
-                    }`}>
-                    <div className="flex items-center space-x-2">
-                            <div className={`w-2 h-2 rounded-full ${
-                                notification.type === 'error' ? 'bg-red-400' : 'bg-green-400'
-                            }`}></div>
-                            <span className="font-medium">{notification.message}</span>
+                <div className={`fixed top-6 right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
+                    notification.type === 'error'
+                        ? 'bg-red-50 border-red-200 text-red-800'
+                        : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                }`}>
+                    <div className="flex items-center space-x-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            notification.type === 'error'
+                                ? 'bg-red-100 text-red-600'
+                                : 'bg-emerald-100 text-emerald-600'
+                        }`}>
+                            {notification.type === 'error' ? (
+                                <XCircle className="w-4 h-4" />
+                            ) : (
+                                <CheckCircle className="w-4 h-4" />
+                            )}
                         </div>
+                        <div className="flex-1">
+                            <p className="font-medium text-sm">{notification.message}</p>
+                        </div>
+                        <button
+                            onClick={() => setNotification(null)}
+                            className="text-current hover:bg-black/5 rounded-lg p-1 transition-colors"
+                        >
+                            <XCircle className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
             )}
         </MainLayout>
