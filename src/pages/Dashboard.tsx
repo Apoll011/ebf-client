@@ -298,7 +298,7 @@ const ClassPerformanceWidget = ({ data }: { data: ClassPerformance[] }) => {
         '0-6': 'Pequenos (0-6)',
         '7-9': 'Primários (7-9)',
         '10-12': 'Juniores (10-12)',
-        '13-15': 'Juvenis (13-15)'
+        '13-15': 'Adolescentes (13-15)'
     };
 
     return (
@@ -324,8 +324,9 @@ const ClassPerformanceWidget = ({ data }: { data: ClassPerformance[] }) => {
                                 <span className="text-sm text-gray-600">Pontos Médios:</span>
                                 <span className="text-sm font-medium">{classData.average_points.toFixed(0)}</span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                                <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 ease-out" style={{width: `${classData.engagement_score}%`}}></div>
+                            <div className="flex justify-between">
+                                <span className="text-sm mr-1 text-gray-600">Engajamento:</span>
+                                <span className="text-sm font-medium">{classData.engagement_score.toFixed(1)}%</span>
                             </div>
                         </div>
                     </div>
