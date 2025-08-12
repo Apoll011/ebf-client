@@ -527,18 +527,18 @@ const GenderPerformanceWidget = ({ data }: { data: GenderPerformanceAnalysis }) 
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-bold text-blue-600">Meninos</h4>
+                    <h4 className="font-bold text-blue-600">{data.male.total_students} Meninos</h4>
                     <p className="text-2xl font-bold">{data.male.average_points.toFixed(0)}</p>
                     <p className="text-xs text-gray-600 mb-2">Pontos Médios</p>
-                    <p className="text-lg font-bold">{data.male.average_attendance_rate}%</p>
-                    <p className="text-xs text-gray-600">Presença Média</p>
+                    <p className="text-lg font-bold">{data.male.engagement_score}%</p>
+                    <p className="text-xs text-gray-600">Engajamento Média</p>
                 </div>
                 <div className="text-center p-4 bg-pink-50 rounded-lg">
-                    <h4 className="font-bold text-pink-600">Meninas</h4>
+                    <h4 className="font-bold text-pink-600">{data.female.total_students} Meninas</h4>
                     <p className="text-2xl font-bold">{data.female.average_points.toFixed(0)}</p>
                     <p className="text-xs text-gray-600 mb-2">Pontos Médios</p>
-                    <p className="text-lg font-bold">{data.female.average_attendance_rate}%</p>
-                    <p className="text-xs text-gray-600">Presença Média</p>
+                    <p className="text-lg font-bold">{data.female.engagement_score}%</p>
+                    <p className="text-xs text-gray-600">Engajamento Média</p>
                 </div>
             </div>
             <div className="mt-4 text-center">
