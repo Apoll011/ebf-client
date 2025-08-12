@@ -194,7 +194,7 @@ export class StudentManagementApi {
             this.authToken = response.access_token;
 
             // Calculate new expiration time
-            const expiresInSeconds = response.expires_in || 3600;
+            const expiresInSeconds = response.expires_in || 60 * 60 * 24 * 5;
             this.tokenExpiresAt = new Date(Date.now() + expiresInSeconds * 1000);
 
             if (response.refresh_token) {

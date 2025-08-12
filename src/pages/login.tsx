@@ -104,7 +104,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="text-gray-600 hover:text-gray-800  hover:cursor-pointer text-sm transition-colors"
+                        className="text-gray-600 hover:text-gray-800  cursor-pointer text-sm transition-colors"
                     >
 
                         Não tem uma conta? <span className="font-medium">Crie Uma</span>
@@ -351,7 +351,7 @@ const AuthScreen = () => {
                         )}
                     </div>
                     <div className="text-center mt-6">
-                        <p className="text-xs text-gray-400">Por Tiago Ines @Embrace</p>
+                        <p className="text-xs text-gray-600">Por Tiago Ines @Embrace</p>
                     </div>
                 </div>
             </div>

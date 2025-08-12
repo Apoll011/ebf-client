@@ -20,6 +20,7 @@ import type {
 
 import { Calendar, Users, Trophy, TrendingUp, Award, Target, Activity, BarChart3, PieChart, UserCheck, Star } from "lucide-react";
 import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";
+import {useNavigate} from "react-router-dom";
 
 const SkeletonCard = ({ className = "" }) => (
     <div className={`bg-white rounded-xl border border-gray-100 p-6 h-full ${className}`}>
@@ -54,8 +55,6 @@ const WidgetWrapper = ({ children, isLoading, skeleton }: { children: React.Reac
 
 
 const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: EventProgress | null }) => {
-    const progressPercentage = data.completion_percentage;
-
     return (
         <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border border-blue-200 p-6">
             <div className="flex items-center justify-between mb-4">
@@ -69,9 +68,18 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
                         Dia {data.current_day} de {data.total_days} • {data.completion_percentage}% concluído
                     </p>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out" style={{width: `${progressPercentage}%`}}></div>
-                </div>
+                {progress && (
+                    <div className="mt-2 pt-4">
+                        <div className="flex justify-between space-x-1">
+                            {Object.entries(progress.milestones).map(([day, milestone]) => (
+                                <div key={day} className="text-center w-full">
+                                    <div className={`w-full h-2 rounded-full ${milestone.status === 'completed' ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+                                    <p className="text-xs mt-1 text-gray-500">Dia {day.split('_')[1]}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
                 <div className="grid grid-cols-3 gap-4 mt-4">
                     <div className="text-center">
                         <p className="text-2xl font-bold text-blue-600">{data.total_registered}</p>
@@ -86,19 +94,6 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
                         <p className="text-xs text-gray-600">Pontos Totais</p>
                     </div>
                 </div>
-                {progress && (
-                    <div className="mt-4 pt-4 border-t border-blue-200">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Linha do Tempo do Evento</h4>
-                        <div className="flex justify-between space-x-1">
-                            {Object.entries(progress.milestones).map(([day, milestone]) => (
-                                <div key={day} className="text-center w-full">
-                                    <div className={`w-full h-2 rounded-full ${milestone.status === 'completed' ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
-                                    <p className="text-xs mt-1 text-gray-500">{day.replace('_', ' ')}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );
@@ -146,11 +141,11 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
 
 const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
     const topThree = data.slice(0, 3);
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    //const handleStudentClick = (studentId: string) => {
-    //    navigate(`/student/${studentId}`)
-    //}
+    const handleStudentClick = (studentId: string) => {
+        navigate(`/student/${studentId}`)
+    }
 
     return (
         <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
@@ -166,7 +161,7 @@ const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
                         }`}>
                             {index + 1}
                         </div>
-                        <div className="flex-1" >
+                        <div className="flex-1 cursor-pointer" onClick={() => handleStudentClick(student.student_id)}>
                             <p className="font-medium text-gray-900">{student.name}</p>
                             <p className="text-sm text-gray-600">
                                 {student.class} • {student.total_points} pontos
@@ -709,7 +704,7 @@ const DashboardPage: React.FC = () => {
     // @ts-ignore
     return (
         <MainLayout>
-            <div className="space-y-6 p-6 bg-gray-50 min-h-screen">
+            <div className="space-y-6 p-6">
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
                     <button
@@ -725,7 +720,7 @@ const DashboardPage: React.FC = () => {
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
-                        {refreshing ? 'Refreshing...' : 'Refresh'}
+                        {refreshing ? 'Carregando...' : 'Carregar'}
                     </button>
                 </div>
 
