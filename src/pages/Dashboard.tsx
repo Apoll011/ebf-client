@@ -23,7 +23,7 @@ import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCach
 import {useNavigate} from "react-router-dom";
 
 const SkeletonCard = ({ className = "" }) => (
-    <div className={`bg-white rounded-xl border border-gray-100 p-6 h-full ${className}`}>
+    <div className={`bg-white rounded-xl border border-blue-200 p-6 h-full ${className}`}>
         <div className="animate-pulse">
             <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
             <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
@@ -33,7 +33,7 @@ const SkeletonCard = ({ className = "" }) => (
 );
 
 const SkeletonChart = ({ className = "" }) => (
-    <div className={`bg-white rounded-xl border border-gray-100 p-6 h-full ${className}`}>
+    <div className={`bg-white rounded-xl border border-blue-200 p-6 h-full ${className}`}>
         <div className="animate-pulse">
             <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
             <div className="flex items-end space-x-2 h-32">
@@ -56,7 +56,7 @@ const WidgetWrapper = ({ children, isLoading, skeleton }: { children: React.Reac
 
 const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: EventProgress | null }) => {
     return (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border border-blue-200 p-6">
+        <div className="bg-white rounded-xl border border-blue-200 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Resumo do Evento</h3>
                 <Calendar className="h-5 w-5 text-blue-600" />
@@ -73,7 +73,7 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
                         <div className="flex justify-between space-x-1">
                             {Object.entries(progress.milestones).map(([day, milestone]) => (
                                 <div key={day} className="text-center w-full">
-                                    <div className={`w-full h-2 rounded-full ${milestone.status === 'completed' ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+                                    <div className={`w-full h-2 rounded-full ${milestone.status === 'completed' ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
                                     <p className="text-xs mt-1 text-gray-500">Dia {day.split('_')[1]}</p>
                                 </div>
                             ))}
@@ -82,15 +82,15 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
                 )}
                 <div className="grid grid-cols-3 gap-4 mt-4">
                     <div className="text-center">
-                        <p className="text-2xl font-bold text-blue-600">{data.total_registered}</p>
+                        <p className="text-2xl font-bold">{data.total_registered}</p>
                         <p className="text-xs text-gray-600">Inscritos</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-2xl font-bold text-green-600">{data.average_daily_attendance}</p>
+                        <p className="text-2xl font-bold ">{data.average_daily_attendance}</p>
                         <p className="text-xs text-gray-600">Presença Média</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-2xl font-bold text-purple-600">{data.total_points_awarded}</p>
+                        <p className="text-2xl font-bold ">{data.total_points_awarded}</p>
                         <p className="text-xs text-gray-600">Pontos Totais</p>
                     </div>
                 </div>
@@ -100,21 +100,19 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
 };
 
 const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailedData: TodayDetailedStats | null }) => {
-    const classColors: { [key: string]: string } = { '0-6': 'bg-blue-400', '7-9': 'bg-green-400', '10-12': 'bg-yellow-400', '13-15': 'bg-red-400' };
-
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 h-full">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Estatísticas de Hoje</h3>
                 <Activity className="h-5 w-5 text-green-600" />
             </div>
             <div className="space-y-4">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <p className="text-3xl font-bold text-green-600">{data.attendance_rate.toFixed(1)}%</p>
+                <div className="text-center p-4 bg-green-50 rounded-lg border border-gray-200">
+                    <p className="text-3xl font-bold">{data.attendance_rate.toFixed(1)}%</p>
                     <p className="text-sm text-gray-600">Taxa de Presença</p>
                     <p className="text-xs text-gray-500">{data.present_count} de {data.total_students} alunos</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <p className="text-lg font-bold text-gray-900">{data.points_awarded_today}</p>
                     <p className="text-xs text-gray-600">Pontos Hoje</p>
                 </div>
@@ -128,7 +126,7 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
                                     <span className="text-gray-500">{stats.present} / {stats.total}</span>
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div className={`${classColors[classGroup as keyof typeof classColors] || 'bg-gray-400'} h-1.5 rounded-full transition-all duration-500 ease-out`} style={{ width: `${stats.rate}%` }}></div>
+                                    <div className={`bg-gray-700 h-1.5 rounded-full transition-all duration-500 ease-out`} style={{ width: `${stats.rate}%` }}></div>
                                 </div>
                             </div>
                         ))}
@@ -140,7 +138,7 @@ const TodayStatsWidget = ({ data, detailedData }: { data: TodaySummary, detailed
 };
 
 const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
-    const topThree = data.slice(0, 3);
+    const topThree = data.slice(0, 5);
     const navigate = useNavigate();
 
     const handleStudentClick = (studentId: string) => {
@@ -148,14 +146,14 @@ const TopPerformersWidget = ({ data }: { data: PerformanceRanking[] }) => {
     }
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 h-full">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Melhores Alunos</h3>
                 <Trophy className="h-5 w-5 text-yellow-600" />
             </div>
             <div className="space-y-3">
                 {topThree.map((student, index) => (
-                    <div key={student.student_id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div key={student.student_id} className="flex items-center space-x-3 p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-200 transition-colors duration-200">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white ${
                             index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-400'
                         }`}>
@@ -180,22 +178,22 @@ const getColor = (index: number) => chartColors[index % chartColors.length];
 
 const RegistrationWidget = ({ data, demographics }: { data: RegistrationStats, demographics: RegistrationDemographics | null }) => {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <div className="bg-white rounded-xl border border-blue-200 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Registros</h3>
                 <Users className="h-5 w-5 text-blue-600" />
             </div>
             <div className="space-y-4">
                 <div className="text-center">
-                    <p className="text-3xl font-bold text-blue-600">{data.total_students}</p>
+                    <p className="text-3xl font-bold ">{data.total_students}</p>
                     <p className="text-sm text-gray-600">Total de Alunos</p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                    <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <div className="text-center p-3 bg-blue-50 rounded-lg border border-gray-200">
                         <p className="text-lg font-bold text-blue-600">{data.by_gender.male}</p>
                         <p className="text-xs text-gray-600">Meninos</p>
                     </div>
-                    <div className="text-center p-3 bg-pink-50 rounded-lg">
+                    <div className="text-center p-3 bg-pink-50 rounded-lg border border-gray-200">
                         <p className="text-lg font-bold text-pink-600">{data.by_gender.female}</p>
                         <p className="text-xs text-gray-600">Meninas</p>
                     </div>
@@ -227,26 +225,26 @@ const EngagementWidget = ({ data }: { data: Engagement }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <div className="bg-white rounded-xl border border-blue-200 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Engajamento</h3>
                 <Target className="h-5 w-5 text-purple-600" />
             </div>
             <div className="space-y-4">
                 <div className="text-center">
-                    <p className="text-3xl font-bold text-purple-600">{data.engagement_percent.toFixed(1)}%</p>
+                    <p className="text-3xl font-bold">{data.engagement_percent.toFixed(1)}%</p>
                     <div className="flex items-center justify-center space-x-1 mt-1">
                         {getTrendIcon()}
                         <p className="text-sm text-gray-600">Engajamento</p>
                     </div>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full transition-all duration-500 ease-out" style={{width: `${data.engagement_percent}%`}}></div>
+                    <div className="bg-gray-700 h-2 rounded-full transition-all duration-500 ease-out" style={{width: `${data.engagement_percent}%`}}></div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-center">
                     <div>
-                        <p className="text-lg font-bold text-gray-900">{data.daily_average}</p>
-                        <p className="text-xs text-gray-600">Média Diária</p>
+                        <p className="text-lg font-bold text-gray-900">{data.awarded_points}</p>
+                        <p className="text-xs text-gray-600">Pontos Atribuidos</p>
                     </div>
                     <div>
                         <p className="text-lg font-bold text-gray-900">{data.participation_rate.toFixed(1)}%</p>
@@ -271,14 +269,14 @@ const PointsCategoryWidget = ({ data }: { data: PointsCategorySummary[] }) => {
     const colors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500'];
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 h-full">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Pontos por Categoria</h3>
                 <BarChart3 className="h-5 w-5 text-gray-600" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {data.map((category, index) => (
-                    <div key={category.category} className="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div key={category.category} className="text-center p-4 bg-gray-50 border border-gray-200 hover:bg-gray-200 rounded-lg transition-colors duration-200">
                         <div className={`w-10 h-10 ${colors[index % colors.length]} rounded-lg mx-auto mb-2 flex items-center justify-center`}>
                             <Award className="h-5 w-5 text-white" />
                         </div>
@@ -302,14 +300,14 @@ const ClassPerformanceWidget = ({ data }: { data: ClassPerformance[] }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 h-full">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Performance por Classe</h3>
                 <PieChart className="h-5 w-5 text-gray-600" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {data.map((classData) => (
-                    <div key={classData.class_id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div key={classData.class_id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-200 border border-gray-200 transition-colors duration-200">
                         <h4 className="font-medium text-gray-900 mb-3">{classNames[classData.class_id] || classData.class_id}</h4>
                         <div className="space-y-2">
                             <div className="flex justify-between">
@@ -337,38 +335,6 @@ const ClassPerformanceWidget = ({ data }: { data: ClassPerformance[] }) => {
     );
 };
 
-const EventPredictionsWidget = ({ data }: { data: EventPredictions }) => {
-    return (
-        <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl border border-green-200 p-6 h-full">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Predições</h3>
-                <Star className="h-5 w-5 text-green-600" />
-            </div>
-            <div className="space-y-4">
-                <div className="text-center">
-                    <p className="text-2xl font-bold text-green-600">{data.completion_forecast.toFixed(1)}%</p>
-                    <p className="text-sm text-gray-600">Previsão de Conclusão</p>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="text-center p-3 bg-white rounded-lg">
-                        <p className="text-lg font-bold text-gray-900">{data.projected_final_attendance}</p>
-                        <p className="text-xs text-gray-600">Presença Final</p>
-                    </div>
-                    <div className="text-center p-3 bg-white rounded-lg">
-                        <p className="text-lg font-bold text-gray-900">{data.remaining_days}</p>
-                        <p className="text-xs text-gray-600">Dias Restantes</p>
-                    </div>
-                </div>
-                <div className="text-center p-3 bg-white rounded-lg">
-                    <p className="text-sm text-gray-600">
-                        Participantes em Risco: <span className="font-bold">{data.at_risk_participants.likely_to_drop}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 export const DailyAttendanceWidget = ({ data }: { data: DailyAttendance[] }) => {
     const today = new Date().toISOString().split("T")[0];
 
@@ -379,7 +345,7 @@ export const DailyAttendanceWidget = ({ data }: { data: DailyAttendance[] }) => 
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full flex flex-col">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 h-full flex flex-col">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Presença Diária</h3>
                 <Calendar className="h-5 w-5 text-gray-600" />
@@ -393,7 +359,6 @@ export const DailyAttendanceWidget = ({ data }: { data: DailyAttendance[] }) => 
                             className={`flex-shrink-0 w-32 bg-gray-50 rounded-lg border transition-all duration-300 p-4 flex flex-col items-center
                                 ${day.date === today ? "shadow-md border-blue-400" : "border-gray-200"}`}
                         >
-                            {/* Circular progress */}
                             <div className="relative w-20 h-20 flex items-center justify-center">
                                 <svg className="absolute inset-0" viewBox="0 0 36 36">
                                     <path
@@ -422,7 +387,7 @@ export const DailyAttendanceWidget = ({ data }: { data: DailyAttendance[] }) => 
                                 </span>
                             </div>
 
-                            <p className={`mt-2 text-sm font-medium ${day.date === today ? "text-blue-600 font-semibold" : "text-gray-700"}`}>
+                            <p className={`mt-2 text-sm font-medium ${day.date === today ? "text-black-600 font-semibold" : "text-gray-700"}`}>
                                 Dia {day.day}
                             </p>
 
@@ -457,7 +422,7 @@ const DailyPointsTrendWidget = ({ data }: { data: DailyPointsTrend[] }) => {
     const scale = maxPoints > 0 ? MAX_BAR_HEIGHT / maxPoints : 1;
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 h-full">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 h-full">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Tendência Diária de Pontos</h3>
                 <TrendingUp className="h-5 w-5 text-gray-600" />
@@ -472,8 +437,8 @@ const DailyPointsTrendWidget = ({ data }: { data: DailyPointsTrend[] }) => {
                     return (
                         <div key={day.day} className="w-full flex flex-col justify-end items-center group">
                             <div
-                                className="bg-green-500 rounded-t transition-all duration-300 ease-out group-hover:bg-green-600"
-                                style={{ height: `${barHeight}px`, minHeight: '4px', width: '16px' }} // minHeight to keep visibility
+                                className="bg-gray-800 rounded-t-xl transition-all duration-300 ease-out group-hover:bg-gray-900"
+                                style={{ height: `${barHeight}px`, minHeight: '4px', width: '50%' }} // minHeight to keep visibility
                                 title={`${day.total_points} pontos`}
                             ></div>
                             <p className="text-xs text-gray-500 mt-1">Dia {day.day}</p>
@@ -487,7 +452,7 @@ const DailyPointsTrendWidget = ({ data }: { data: DailyPointsTrend[] }) => {
 
 const PointsDistributionWidget = ({ data }: { data: PointsDistribution }) => {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 flex flex-col">
+        <div className="bg-white rounded-xl border border-blue-200 p-6 flex flex-col">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Distribuição de Pontos</h3>
                 <PieChart className="h-5 w-5 text-gray-600" />
@@ -497,7 +462,7 @@ const PointsDistributionWidget = ({ data }: { data: PointsDistribution }) => {
                     data.distribution.map(range => (
                         <div key={range.range} className="flex-1 text-center group">
                             <div
-                                className="bg-indigo-400 rounded-t transition-all duration-300 ease-out group-hover:bg-indigo-500 mx-auto text-white align-center items-center justify-center flex"
+                                className="bg-gray-600 rounded-t transition-all duration-300 ease-out group-hover:bg-gray-800 mx-auto text-white align-center items-center justify-center flex"
                                 style={{
                                     height: `${range.percentage/100 * 200 + 6}px`,
                                     width: "80%"
@@ -529,25 +494,25 @@ const PointsDistributionWidget = ({ data }: { data: PointsDistribution }) => {
 
 const GenderPerformanceWidget = ({ data }: { data: GenderPerformanceAnalysis }) => {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <div className="bg-white rounded-xl border border-blue-200 p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Performance por Gênero</h3>
                 <UserCheck className="h-5 w-5 text-pink-600" />
             </div>
             <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-center p-4 bg-blue-50 rounded-lg border border-gray-200">
                     <h4 className="font-bold text-blue-600">{data.male.total_students} Meninos</h4>
                     <p className="text-2xl font-bold">{data.male.average_points.toFixed(0)}</p>
                     <p className="text-xs text-gray-600 mb-2">Pontos Médios</p>
                     <p className="text-lg font-bold">{data.male.engagement_score}%</p>
-                    <p className="text-xs text-gray-600">Engajamento Média</p>
+                    <p className="text-xs text-gray-600">Média de Engajamento</p>
                 </div>
-                <div className="text-center p-4 bg-pink-50 rounded-lg">
+                <div className="text-center p-4 bg-pink-50 rounded-lg border border-gray-200">
                     <h4 className="font-bold text-pink-600">{data.female.total_students} Meninas</h4>
                     <p className="text-2xl font-bold">{data.female.average_points.toFixed(0)}</p>
                     <p className="text-xs text-gray-600 mb-2">Pontos Médios</p>
                     <p className="text-lg font-bold">{data.female.engagement_score}%</p>
-                    <p className="text-xs text-gray-600">Engajamento Média</p>
+                    <p className="text-xs text-gray-600">Média de Engajamento</p>
                 </div>
             </div>
             <div className="mt-4 text-center">
@@ -758,12 +723,6 @@ const DashboardPage: React.FC = () => {
         forceRefresh
     );
 
-    const { data: predictions, isLoading: isLoadingPredictions } = useWidgetDataWithCache(
-        'predictions',
-        () => api.getEventPredictions(),
-        defaultEventPredictions,
-        forceRefresh
-    );
 
     const handleRefresh = async () => {
         setRefreshing(true);
@@ -779,8 +738,7 @@ const DashboardPage: React.FC = () => {
         isLoadingDailyAttendance || isLoadingTodayStats || isLoadingTodayDetailedStats ||
         isLoadingTopPerformers || isLoadingRegistrationStats || isLoadingRegistrationDemographics ||
         isLoadingEngagement || isLoadingPointsCategory || isLoadingDailyPointsTrends ||
-        isLoadingPointsDistribution || isLoadingClassPerformance || isLoadingGenderPerformance ||
-        isLoadingPredictions;
+        isLoadingPointsDistribution || isLoadingClassPerformance || isLoadingGenderPerformance;
 
     // @ts-ignore
     return (
@@ -791,7 +749,7 @@ const DashboardPage: React.FC = () => {
                     <button
                         onClick={handleRefresh}
                         disabled={refreshing || isAnyLoading}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <svg
                             className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
@@ -823,15 +781,12 @@ const DashboardPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                     <WidgetWrapper isLoading={isLoadingTopPerformers} skeleton={<SkeletonCard />}>
                         {topPerformers && <TopPerformersWidget data={topPerformers} />}
                     </WidgetWrapper>
                     <WidgetWrapper isLoading={isLoadingEngagement} skeleton={<SkeletonCard />}>
                         {engagement && <EngagementWidget data={engagement} />}
-                    </WidgetWrapper>
-                    <WidgetWrapper isLoading={isLoadingPredictions} skeleton={<SkeletonCard />}>
-                        {predictions && <EventPredictionsWidget data={predictions} />}
                     </WidgetWrapper>
                 </div>
 

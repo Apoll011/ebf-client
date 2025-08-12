@@ -351,7 +351,7 @@ const AuthScreen = () => {
                         )}
                     </div>
                     <div className="text-center mt-6">
-                        <p className="text-xs text-gray-600">Por Tiago Ines @Embrace</p>
+                        <p className="text-xs text-gray-600">Por Tiago Inês @Embrace</p>
                     </div>
                 </div>
             </div>

@@ -446,7 +446,7 @@ const StudentInfo = () => {
             </div>
 
             {showPointsModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
                             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                                 <div className="p-6 border-b border-gray-200">
                                     <div className="flex items-center justify-between mb-4">
@@ -547,7 +547,7 @@ const StudentInfo = () => {
             )}
 
             {showAdjustModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
                             <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
                                 <div className="p-6 border-b border-gray-200">
                                     <div className="flex items-center justify-between">
@@ -626,7 +626,7 @@ const StudentInfo = () => {
             )}
 
             {showDeleteModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
                         <div className="p-6 border-b border-gray-200">
                             <div className="flex items-center justify-between">
