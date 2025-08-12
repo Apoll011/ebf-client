@@ -219,6 +219,7 @@ const StudentInfo = () => {
                 date: selectedDate,
                 points: selectedPoints
             };
+            console.log('Saving points:', pointsData);
             await api.awardPoints(student.id, pointsData);
             showNotification('Pontos atualizados com sucesso!');
             setShowPointsModal(false);
