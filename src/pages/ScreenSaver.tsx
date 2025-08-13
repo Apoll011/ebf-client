@@ -9,13 +9,16 @@ import {
     EventSummaryWidget,
     TopPerformersWidget
 } from "../components/ScreensaverWidgets.tsx";
+import {useNavigate} from "react-router-dom";
 
 const Screensaver = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
 
-    const { api, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const { api, logout, user } = useAuth();
 
     const [forceRefreshStates, setForceRefreshStates] = useState({
         eventSummary: false,
@@ -133,7 +136,7 @@ const Screensaver = () => {
     });
 
     return (
-        <ProtectedRoute>
+        <ProtectedRoute ignoreViewer={true}>
             <div
                 className="min-h-screen flex items-center justify-center p-4"
                 style={{
@@ -177,10 +180,16 @@ const Screensaver = () => {
                         <div className="text-center text-white/70">
                             <div className="inline-flex items-center space-x-3">
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white/70 rounded-full animate-spin"></div>
-                                <span className="text-xl font-light">Loading dashboard...</span>
+                                <span className="text-xl font-light">Carregando...</span>
                             </div>
                         </div>
                     )}
+                    <div className="text-center fixed right-3 bottom-2 text-white/70">
+                        {user?.role !== 'viewer' && (
+                            <button onClick={() => navigate('/')} className="font-light hover:font-bold cursor-pointer mr-4">Dashboard</button>
+                        )}
+                        <button onClick={() => logout()} className="font-light hover:font-bold cursor-pointer">Logout</button>
+                    </div>
                 </div>
             </div>
         </ProtectedRoute>

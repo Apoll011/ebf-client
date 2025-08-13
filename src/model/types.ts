@@ -533,13 +533,13 @@ export interface RefreshTokenResponse {
     refresh_token?: string;
 }
 
+export type UserRole = 'admin' | 'teacher' | 'viewer';
+
 export interface User {
     id?: string;
     username: string;
-    role?: string;
+    role?: UserRole;
 }
-
-export type UserRole = 'admin' | 'teacher' | 'viewer';
 
 export interface AuthUser {
     username: string,
