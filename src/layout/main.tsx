@@ -4,16 +4,12 @@ import {useNavigate} from "react-router-dom";
 import React from "react";
 
 export const MainLayout = ({children}: {children: React.ReactNode}) => {
-    const { isAuthenticated, isLoading } = useAuth();
+    const { isAuthenticated, isLoading, user } = useAuth();
 
     const navigate = useNavigate();
 
     if (isLoading) {
         return <div>Loading...</div>;
-    }
-
-    if (!isAuthenticated) {
-        navigate('/login');
     }
 
     return (

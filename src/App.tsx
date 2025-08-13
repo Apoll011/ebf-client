@@ -6,6 +6,7 @@ import StudentRegistration from "./pages/StudentRegister.tsx";
 import StudentInfo from "./pages/Student.tsx";
 import StudentList from "./pages/StudentList.tsx";
 import {FlagIcon} from "lucide-react";
+import Screensaver from "./pages/ScreenSaver.tsx";
 
 function Error404() {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ export function App() {
                     <Route path="/register" element={<StudentRegistration />} />
                     <Route path="/student/:studentId" element={<StudentInfo />} />
                     <Route path="/list" element={<StudentList />} />
+                    <Route path="/screensaver" element={<Screensaver />} />
                     <Route path="*" element={<Error404 />} />
                 </Routes>
             </Router>
