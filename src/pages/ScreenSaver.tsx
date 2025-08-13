@@ -15,7 +15,7 @@ const Screensaver = () => {
     const [isVisible, setIsVisible] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
 
-    const { api } = useAuth();
+    const { api, logout } = useAuth();
 
     const [forceRefreshStates, setForceRefreshStates] = useState({
         eventSummary: false,

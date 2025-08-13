@@ -4,9 +4,10 @@ import type { JSX } from "react";
 
 interface ProtectedRouteProps {
     children: JSX.Element;
+    ignoreViewer?: boolean;
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, ignoreViewer }: ProtectedRouteProps) {
     const { isAuthenticated, user, isLoading } = useAuth();
 
     if (isLoading) {
@@ -21,7 +22,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         return <Navigate to="/login" replace />;
     }
 
-    if (user?.role === "viewer") {
+    if (user?.role === "viewer" && !ignoreViewer) {
         return <Navigate to="/screensaver" replace />;
     }
 
