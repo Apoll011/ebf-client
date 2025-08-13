@@ -18,7 +18,7 @@ import {
     Gift, type LucideProps
 } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth.tsx";
-import type {AwardPointsRequest, Student} from "../model/types.ts";
+import type {AwardPointsRequest, DailyPoints, PointAdjustmentRequest, Student} from "../model/types.ts";
 import {MainLayout} from "../layout/main.tsx";
 
 const StudentInfo = () => {
@@ -35,7 +35,7 @@ const StudentInfo = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [selectedPoints, setSelectedPoints] = useState<{ presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; }>({});
-    const [adjustmentData, setAdjustmentData] = useState({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
+    const [adjustmentData, setAdjustmentData] = useState<PointAdjustmentRequest>({ amount: 0, reason: '', date_adjust: new Date().toISOString().split('T')[0] });
     const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
 
     type colors_name = 'emerald' | 'blue' | 'violet' | 'amber' | 'rose' | 'indigo';
@@ -197,18 +197,24 @@ const StudentInfo = () => {
         );
     }
 
-    const getPointsForDate = async (date: string) => {
-        const dayPoints = student?.points?.find(p => p.date === date);
-        return dayPoints || {};
+    const getPointsForDate = async (date: string): Promise<DailyPoints> => {
+        const dayPoints = student?.points_records?.find(p => p.award_date === date);
+        return dayPoints || {award_date: "", id: 0, total: 0};
     };
 
-    const openPointsModal = async () => {
-        const points: { presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; } = await getPointsForDate(selectedDate);
-        const booleanPoints: { presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; } = {};
-        pointCategories.forEach(cat => {
-            booleanPoints[cat.key] = Boolean(points[cat.key]);
+    const changePointsDate = (date: string) => {
+        setSelectedDate(date);
+        getPointsForDate(date).then(points => {
+            const booleanPoints: { presence?: boolean; book?: boolean; versicle?: boolean; participation?: boolean; guest?: boolean; game?: boolean; } = {};
+            pointCategories.forEach(cat => {
+                booleanPoints[cat.key] = Boolean(points[cat.key]);
+            });
+            setSelectedPoints(booleanPoints);
         });
-        setSelectedPoints(booleanPoints);
+    }
+
+    const openPointsModal = async () => {
+        changePointsDate(selectedDate);
         setShowPointsModal(true);
     };
 
@@ -223,10 +229,9 @@ const StudentInfo = () => {
         setIsUpdatingPoints(true);
         try {
             const pointsData: AwardPointsRequest = {
-                date: selectedDate,
+                award_date: selectedDate,
                 points: selectedPoints
             };
-            console.log('Saving points:', pointsData);
             await api.awardPoints(student.id, pointsData);
             showNotification('Pontos atualizados com sucesso!');
             setShowPointsModal(false);
@@ -244,7 +249,7 @@ const StudentInfo = () => {
             await api.adjustPoints(student.id, adjustmentData);
             showNotification('Ajuste de pontos realizado com sucesso!');
             setShowAdjustModal(false);
-            setAdjustmentData({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
+            setAdjustmentData({ amount: 0, reason: '', date_adjust: new Date().toISOString().split('T')[0] });
             await updateStudentInBackground();
         } catch {
             showNotification('Erro ao ajustar pontos', 'error');
@@ -267,20 +272,37 @@ const StudentInfo = () => {
 
     const getWeekDates = () => {
         const today = new Date();
-        const currentWeek = [];
-        const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay());
+        const currentWeek: {
+            date: string;
+            day: number;
+            dayName: string;
+            isToday: boolean;
+        }[] = [];
 
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(startOfWeek);
-            date.setDate(startOfWeek.getDate() + i);
+        const startOfWeek = new Date(today);
+        const day = today.getDay();
+        const diff = (day === 0 ? -6 : 1) - day;
+        startOfWeek.setDate(today.getDate() + diff);
+
+        let endDate = new Date(today);
+        if (day === 6 || day === 0) {
+            endDate = new Date(startOfWeek);
+            endDate.setDate(startOfWeek.getDate() + 4);
+        }
+
+        for (
+            let date = new Date(startOfWeek);
+            date <= endDate;
+            date.setDate(date.getDate() + 1)
+        ) {
             currentWeek.push({
                 date: date.toISOString().split('T')[0],
                 day: date.getDate(),
-                dayName: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][i],
+                dayName: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][date.getDay()],
                 isToday: date.toDateString() === today.toDateString()
             });
         }
+
         return currentWeek;
     };
 
@@ -467,12 +489,11 @@ const StudentInfo = () => {
                                         </button>
                                     </div>
 
-                                    {/* Week Days Selector */}
-                                    <div className="grid grid-cols-7 gap-2 mb-4">
+                                    <div className={`grid grid-cols-${getWeekDates().length} gap-2 mb-4`}>
                                         {getWeekDates().map((day) => (
                                             <button
                                                 key={day.date}
-                                                onClick={() => setSelectedDate(day.date)}
+                                                onClick={() => changePointsDate(day.date)}
                                                 className={`p-3 rounded-lg text-sm font-medium transition-colors ${
                                                     selectedDate === day.date
                                                         ? 'bg-gray-800 text-white'
@@ -586,7 +607,7 @@ const StudentInfo = () => {
                                         <label className="block text-sm font-medium text-gray-700 mb-2">Data</label>
                                         <input
                                             type="date"
-                                            value={adjustmentData.date}
+                                            value={adjustmentData.date_adjust}
                                             onChange={(e) => setAdjustmentData(prev => ({ ...prev, date: e.target.value }))}
                                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
                                         />
@@ -608,7 +629,7 @@ const StudentInfo = () => {
                                     <button
                                         onClick={() => {
                                             setShowAdjustModal(false);
-                                            setAdjustmentData({ amount: 0, reason: '', date: new Date().toISOString().split('T')[0] });
+                                            setAdjustmentData({ amount: 0, reason: '', date_adjust: new Date().toISOString().split('T')[0] });
                                         }}
                                         className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                                     >
