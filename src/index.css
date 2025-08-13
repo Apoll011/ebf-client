@@ -20,9 +20,209 @@
     100% { transform: rotate(6deg); }
 }
 
+:root {
+    --glass-bg-primary: rgba(255, 255, 255, 0.08);
+    --glass-bg-secondary: rgba(255, 255, 255, 0.04);
+    --glass-bg-accent: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-highlight: rgba(255, 255, 255, 0.5);
+    --glass-text: rgba(255, 255, 255, 0.9);
+    --glass-placeholder: rgba(255, 255, 255, 0.7);
+    --glass-blur-strong: 14px;
+    --glass-blur-soft: 8px;
+}
+
+
 .glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background: var(--glass-bg-primary);
+    backdrop-filter: blur(var(--glass-blur-strong));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+}
+
+.glass-inner {
+    background: var(--glass-bg-secondary);
+    backdrop-filter: blur(var(--glass-blur-soft));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.glass-accent {
+    background: var(--glass-bg-accent);
+    backdrop-filter: blur(var(--glass-blur-soft));
+    border: 1px solid var(--glass-highlight);
+    border-radius: 12px;
+}
+
+.glass-input {
+    background: var(--glass-bg-secondary);
+    backdrop-filter: blur(var(--glass-blur-soft));
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--glass-text);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.glass-input::placeholder {
+    color: var(--glass-placeholder);
+}
+
+.glass-input:focus {
+    border-color: var(--glass-highlight);
+    box-shadow: 0 0 8px var(--glass-highlight);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.glass-select {
+    appearance: none;
+    background: var(--glass-bg-secondary) url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 10px center/12px;
+    backdrop-filter: blur(var(--glass-blur-soft));
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 36px 10px 14px;
+    color: var(--glass-text);
+    font-size: 14px;
+}
+
+.glass-textarea {
+    background: var(--glass-bg-secondary);
+    backdrop-filter: blur(var(--glass-blur-soft));
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--glass-text);
+    resize: none;
+}
+
+.glass-button {
+    background: var(--glass-bg-primary);
+    backdrop-filter: blur(var(--glass-blur-soft));
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: var(--glass-text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.glass-button:active {
+    transform: translateY(0);
+}
+
+/* Accent button (for call-to-action) */
+.glass-button-accent {
+    background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.15) 40%,
+            rgba(255, 255, 255, 0.05) 100%
+    );
+    backdrop-filter: blur(12px) saturate(1.2);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+    padding: 12px 24px;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover with subtle light sweep */
+.glass-button-accent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.35) 40%,
+            transparent 80%
+    );
+    transform: skewX(-20deg);
+    transition: all 0.6s ease;
+}
+
+.glass-button-accent:hover::before {
+    left: 100%;
+}
+
+.glass-button-accent:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Active press effect */
+.glass-button-accent:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow:
+            0 3px 10px rgba(0, 0, 0, 0.2),
+            inset 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+
+/* Glass Badge */
+.glass-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    border-radius: 50px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--glass-text);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Glass Divider */
+.glass-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    margin: 12px 0;
+}
+
+/* Glass Toggle Switch */
+.glass-toggle {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: var(--glass-bg-secondary);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+}
+
+.glass-toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: var(--glass-text);
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.glass-toggle.active::after {
+    transform: translateX(20px);
 }
