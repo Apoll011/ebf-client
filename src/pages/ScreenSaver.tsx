@@ -3,6 +3,7 @@ import { Calendar, Target, Trophy, PieChart, TrendingUp } from 'lucide-react';
 import type {ClassPerformance, Engagement, EventProgress, EventSummary, PerformanceRanking} from "../model/types.ts";
 import {useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";
 import {useAuth} from "../hooks/useAuth.tsx";
+import {ProtectedRoute} from "../components/ProtectedRoute.tsx";
 
 const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: EventProgress | null }) => {
     return (
@@ -320,55 +321,57 @@ const Screensaver = () => {
     });
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center p-4"
-            style={{
-                backgroundImage: "url('/wallpaper.webp')",
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundAttachment: 'fixed'
-            }}
-        >
-            <div className="w-full max-w-5xl">
-                <div className="text-center mb-5">
-                    <div className="relative">
-                        <h1 className="text-7xl font-extralight text-white mb-4 tracking-wider">
-                            {timeString}
-                        </h1>
+        <ProtectedRoute>
+            <div
+                className="min-h-screen flex items-center justify-center p-4"
+                style={{
+                    backgroundImage: "url('/wallpaper.webp')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundAttachment: 'fixed'
+                }}
+            >
+                <div className="w-full max-w-5xl">
+                    <div className="text-center mb-5">
+                        <div className="relative">
+                            <h1 className="text-7xl font-extralight text-white mb-4 tracking-wider">
+                                {timeString}
+                            </h1>
+                        </div>
+                        <p className="text-2xl text-white/80 capitalize font-light tracking-wide">
+                            {dateString}
+                        </p>
                     </div>
-                    <p className="text-2xl text-white/80 capitalize font-light tracking-wide">
-                        {dateString}
-                    </p>
-                </div>
 
-                {!isAnyLoading && (
-                    <div className="relative min-h-[400px] flex items-center justify-center">
-                        <div
-                            className={`w-full transition-all duration-150 ease-in-out ${
-                                isVisible
-                                    ? 'opacity-100 transform translate-y-0 scale-100'
-                                    : 'opacity-0 transform translate-y-4 scale-95'
-                            }`}
-                        >
-                            <div className="flex justify-center">
-                                <div className="w-full max-w-2xl">
-                                    {widgets[currentSlide].component}
+                    {!isAnyLoading && (
+                        <div className="relative min-h-[400px] flex items-center justify-center">
+                            <div
+                                className={`w-full transition-all duration-150 ease-in-out ${
+                                    isVisible
+                                        ? 'opacity-100 transform translate-y-0 scale-100'
+                                        : 'opacity-0 transform translate-y-4 scale-95'
+                                }`}
+                            >
+                                <div className="flex justify-center">
+                                    <div className="w-full max-w-2xl">
+                                        {widgets[currentSlide].component}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {isAnyLoading && (isLoadingEventSummary || isLoadingEventProgress) && (
-                    <div className="text-center text-white/70">
-                        <div className="inline-flex items-center space-x-3">
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white/70 rounded-full animate-spin"></div>
-                            <span className="text-xl font-light">Loading dashboard...</span>
+                    {isAnyLoading && (isLoadingEventSummary || isLoadingEventProgress) && (
+                        <div className="text-center text-white/70">
+                            <div className="inline-flex items-center space-x-3">
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white/70 rounded-full animate-spin"></div>
+                                <span className="text-xl font-light">Loading dashboard...</span>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-        </div>
+        </ProtectedRoute>
     );
 };
 
