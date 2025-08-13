@@ -462,6 +462,7 @@ export class StudentManagementApi {
         return this.request<User>('/users', {
             method: 'POST',
             body: JSON.stringify(userData),
+            skipAuth: true,
         });
     }
 
