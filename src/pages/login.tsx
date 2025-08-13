@@ -116,7 +116,7 @@ const LoginForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: ()
 };
 
 const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess: () => void}) => {
-    const { api } = useAuth();
+    const { api, login } = useAuth();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -171,9 +171,8 @@ const RegisterForm = ({ onToggle, onSuccess }: {onToggle: () => void, onSuccess:
                 password: formData.password,
                 role: formData.role as UserRole
             });
-            console.log('Registration result:', result);
             if (result.username) {
-                onSuccess?.();
+                login(formData.username, formData.password).then(() => onSuccess?.());
             }
             else {
                 setError('Registracão falhou. Tente novamente.');
