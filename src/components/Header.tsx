@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Menu, X, Home, Users, UserPlus } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Menu, X, Home, Users, UserPlus, LogOut, Monitor, User } from 'lucide-react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth.tsx";
 
@@ -10,6 +10,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = () => {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const userMenuRef = useRef(null);
     const { user, logout } = useAuth();
 
     const currentPath = useLocation().pathname;
@@ -62,6 +64,19 @@ const Header: React.FC<HeaderProps> = () => {
         }
     }
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,8 +102,8 @@ const Header: React.FC<HeaderProps> = () => {
                                     onClick={() => handleNavigation(item.href)}
                                     className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                         item.current
-                                            ? 'bg-gray-100 text-gray-900'
-                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                            ? 'bg-gray-200 text-gray-900'
+                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                                     }`}
                                 >
                                     <Icon className="h-4 w-4" />
@@ -99,16 +114,61 @@ const Header: React.FC<HeaderProps> = () => {
                     </nav>
 
                     <div className="hidden md:flex items-center space-x-4">
-                        <div className="flex items-center space-x-3 group">
-                            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                <span
-                                    className="text-gray-700 font-medium text-sm">{user.username.charAt(0).toUpperCase()}</span>
-                            </div>
-                            <div className="text-sm">
-                                <div className="text-gray-900 font-medium">{user.username}</div>
-                                <div className="text-gray-500 text-xs">{getRoleName()}</div>
-                            </div>
-                            <button onClick={logout} className="text-black  hover:bg-gray-200 w-25 h-15 top-12 right-8 rounded-2xl absolute hidden bg-white border border-gray-200 shadow-lg z-50 group-hover:block">Logout</button>
+                        <div className="relative" ref={userMenuRef}>
+                            <button
+                                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                className="flex items-center space-x-3 hover:bg-gray-100 cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                                    <span className="text-gray-700 font-medium text-sm">
+                                        {user.username.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
+                                <div className="text-sm text-left">
+                                    <div className="text-gray-900 font-medium">{user.username}</div>
+                                    <div className="text-gray-500 text-xs">{getRoleName()}</div>
+                                </div>
+                            </button>
+
+                            {isUserMenuOpen && (
+                                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                                    <div className="p-3 border-b border-gray-100">
+                                        <div className="flex items-center space-x-3">
+                                            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                                                <User className="h-5 w-5 text-gray-600" />
+                                            </div>
+                                            <div className="text-sm">
+                                                <div className="text-gray-900 font-medium">{user.username}</div>
+                                                <div className="text-gray-500 text-xs">{getRoleName()}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="py-2">
+                                        <button
+                                            onClick={() => {
+                                                setIsUserMenuOpen(false);
+                                                handleNavigation('/screensaver');
+                                            }}
+                                            className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                        >
+                                            <Monitor className="h-4 w-4 mr-3" />
+                                            Screensaver
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                setIsUserMenuOpen(false);
+                                                logout();
+                                            }}
+                                            className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                        >
+                                            <LogOut className="h-4 w-4 mr-3" />
+                                            Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -149,14 +209,40 @@ const Header: React.FC<HeaderProps> = () => {
                             })}
 
                             <div className="mt-4 pt-4 border-t border-gray-200">
-                                <div className="flex items-center space-x-3 px-3">
-                                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                        <span className="text-gray-700 font-medium text-sm">{user.username.charAt(0)}</span>
+                                <div className="flex items-center space-x-3 px-3 mb-3">
+                                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                                <span className="text-gray-700 font-medium text-sm">
+                                    {user.username.charAt(0).toUpperCase()}
+                                </span>
                                     </div>
                                     <div className="text-sm">
                                         <div className="text-gray-900 font-medium">{user.username}</div>
                                         <div className="text-gray-500 text-xs">{getRoleName()}</div>
                                     </div>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <button
+                                        onClick={() => {
+                                            toggleMobileMenu();
+                                            handleNavigation('/screensaver');
+                                        }}
+                                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors text-left"
+                                    >
+                                        <Monitor className="h-5 w-5" />
+                                        <span>Screensaver</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            toggleMobileMenu();
+                                            logout();
+                                        }}
+                                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors text-left"
+                                    >
+                                        <LogOut className="h-5 w-5" />
+                                        <span>Logout</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
