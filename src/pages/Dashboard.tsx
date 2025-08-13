@@ -86,7 +86,7 @@ const EventSummaryWidget = ({ data, progress }: { data: EventSummary, progress: 
                         <p className="text-xs text-gray-600">Inscritos</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-2xl font-bold ">{data.average_daily_attendance}</p>
+                        <p className="text-2xl font-bold ">{data.average_daily_attendance.toFixed(1)}</p>
                         <p className="text-xs text-gray-600">Presença Média</p>
                     </div>
                     <div className="text-center">

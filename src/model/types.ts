@@ -21,7 +21,7 @@ export interface Student {
     parent_phone: string;
     notes?: string;
     total_points: number;
-    points: DailyPoints[];
+    points_records: DailyPoints[];
     created_at: string;
     last_updated?: string;
 }
@@ -42,18 +42,20 @@ export type UpdateStudentRequest = Partial<CreateStudentRequest>
 
 // Daily Points
 export interface DailyPoints {
-    date: string;
-    PRESENCE?: number;
-    BOOK?: number;
-    VERSICLE?: number;
-    PARTICIPATION?: number;
-    GUEST?: number;
-    GAME?: number;
+    award_date: string;
+    presence?: number;
+    book?: number;
+    versicle?: number;
+    participation?: number;
+    guest?: number;
+    game?: number;
+    id: number;
+    total: number;
 }
 
 // Points Award Request
 export interface AwardPointsRequest {
-    date: string;
+    award_date: string;
     points: {
         presence?: boolean;
         book?: boolean;
@@ -68,7 +70,7 @@ export interface AwardPointsRequest {
 export interface PointAdjustmentRequest {
     amount: number;
     reason: string;
-    date: string;
+    date_adjust: string;
 }
 
 // Student List Item (simplified for lists)
