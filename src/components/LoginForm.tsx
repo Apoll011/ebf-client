@@ -38,7 +38,7 @@ export const LoginForm = ({onToggle, onSuccess}: { onToggle: () => void, onSucce
     return (
         <div className="w-full max-w-sm mx-auto">
             <div className="text-center mb-12">
-                <h1 className="text-2xl font-light text-gray-800 mb-2">Entre no Portal EBF</h1>
+                <h1 className="text-2xl font-light text-white mb-2">Entre no Portal EBF</h1>
             </div>
 
             {error && (
@@ -56,7 +56,7 @@ export const LoginForm = ({onToggle, onSuccess}: { onToggle: () => void, onSucce
                         value={formData.username}
                         onChange={(e) => setFormData({...formData, username: e.target.value})}
                         onKeyPress={handleKeyPress}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400"
+                        className="w-full px-4 py-4 glass-input border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 text-gray-700 placeholder-gray-400"
                     />
                 </div>
 
@@ -67,7 +67,7 @@ export const LoginForm = ({onToggle, onSuccess}: { onToggle: () => void, onSucce
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                         onKeyUp={handleKeyPress}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400 pr-12"
+                        className="w-full px-4 py-4 glass-input border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 text-white placeholder-gray-400"
                     />
                     <button
                         type="button"
@@ -81,7 +81,7 @@ export const LoginForm = ({onToggle, onSuccess}: { onToggle: () => void, onSucce
                 <button
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="w-full py-4 mb-1 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed group"
+                    className="w-full py-4 mb-1 glass-button-accent text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed group"
                 >
                     {isLoading ? (
                         <>
@@ -101,7 +101,7 @@ export const LoginForm = ({onToggle, onSuccess}: { onToggle: () => void, onSucce
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="text-gray-600 hover:text-gray-800  cursor-pointer text-sm transition-colors"
+                        className="text-white/80 hover:text-white  cursor-pointer text-sm transition-colors"
                     >
 
                         Não tem uma conta? <span className="font-medium">Crie Uma</span>

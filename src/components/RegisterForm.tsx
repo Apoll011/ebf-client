@@ -80,7 +80,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
     return (
         <div className="w-full max-w-sm mx-auto">
             <div className="text-center mb-12">
-                <h1 className="text-2xl font-light text-gray-800 mb-2">Crie uma Conta no Portal EBF</h1>
+                <h1 className="text-2xl font-light text-white mb-2">Crie uma Conta no Portal EBF</h1>
             </div>
 
             {error && (
@@ -98,7 +98,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                         value={formData.username}
                         onChange={(e) => setFormData({...formData, username: e.target.value})}
                         onKeyPress={handleKeyPress}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400"
+                        className="w-full px-4 py-4 glass-input border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 text-gray-700 placeholder-gray-400"
                     />
                 </div>
 
@@ -109,7 +109,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                         onKeyPress={handleKeyPress}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400 pr-12"
+                        className="w-full px-4 py-4 glass-input border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 text-gray-700 placeholder-gray-400"
                     />
                     <button
                         type="button"
@@ -127,7 +127,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                         onKeyPress={handleKeyPress}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400 pr-12"
+                        className="w-full px-4 py-4 glass-input border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 text-gray-700 placeholder-gray-400"
                     />
                     <button
                         type="button"
@@ -139,17 +139,17 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                 </div>
 
                 <div className="space-y-3">
-                    <label className="block text-sm text-gray-700 font-medium">Responsabilidade</label>
+                    <label className="block text-sm text-white/90 font-medium">Responsabilidade</label>
                     <div className="grid grid-cols-3 gap-2">
                         {roles.map((role) => (
                             <button
                                 key={role.value}
                                 type="button"
                                 onClick={() => handleRoleChange(role.value)}
-                                className={`px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
+                                className={`px-3 py-2 text-[0.7rem] rounded-lg transition-all duration-200 !p-2 ${
                                     formData.role === role.value
-                                        ? 'bg-gray-900 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ? 'glass-button-accent'
+                                        : 'glass-button '
                                 }`}
                             >
                                 {role.label}
@@ -166,7 +166,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                             value={formData.passcode}
                             onChange={(e) => setFormData({...formData, passcode: e.target.value})}
                             onKeyPress={handleKeyPress}
-                            className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:bg-white transition-all duration-200 text-gray-700 placeholder-gray-400"
+                            className="w-full px-4 py-4 glass-input border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 text-gray-700 placeholder-gray-400"
                         />
                     </div>
                 )}
@@ -174,7 +174,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                 <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="w-full py-4 mb-1 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed group"
+                    className="w-full py-4 mb-1 glass-button-accent text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed group"
                 >
                     {loading ? (
                         <>
@@ -194,7 +194,7 @@ export const RegisterForm = ({onToggle, onSuccess}: { onToggle: () => void, onSu
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="text-gray-600 hover:text-gray-800 hover:cursor-pointer text-sm transition-colors"
+                        className="text-white/80 hover:text-white hover:cursor-pointer text-sm transition-colors"
                     >
                         Já tem uma conta? <span className="font-medium">Cadastre-se</span>
                     </button>
