@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.tsx';
 import type {AgeGroup, Gender, Order, SortBy, StudentListItem, StudentsListQuery} from '../model/types';
-import {MainLayout} from "../layout/main.tsx";
+import {MainLayout} from "../layout/MainLayout.tsx";
 import {generatePDFContent} from "../util/print.ts";
 
 const StudentListPage: React.FC = () => {
@@ -416,12 +416,12 @@ const StudentListPage: React.FC = () => {
                                             </div>
 
                                             <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                        {getAgeGroupLabel(student.group)}
-                      </span>
+                                                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    {getAgeGroupLabel(student.group)}
+                                                </span>
                                                 <span className="text-sm font-medium text-gray-900">
-                        {student.total_points} pts
-                      </span>
+                                                    {student.total_points} pts
+                                                </span>
                                             </div>
                                         </div>
                                     ))}
@@ -429,7 +429,6 @@ const StudentListPage: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Pagination */}
                         {totalPages > 1 && (
                             <div className="px-6 py-4 border-t border-gray-200">
                                 <div className="flex items-center justify-between">

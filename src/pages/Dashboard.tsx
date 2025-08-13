@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {MainLayout} from "../layout/main.tsx";
+import {MainLayout} from "../layout/MainLayout.tsx";
 import {useAuth} from "../hooks/useAuth.tsx";
 import type {RegistrationStats} from "../model/types";
 import {dashboardCache, useWidgetDataWithCache} from "../hooks/useWidgetDataCached.ts";

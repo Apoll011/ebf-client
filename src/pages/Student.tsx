@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth.tsx";
 import type {AwardPointsRequest, DailyPoints, PointAdjustmentRequest, Student} from "../model/types.ts";
-import {MainLayout} from "../layout/main.tsx";
+import {MainLayout} from "../layout/MainLayout.tsx";
 
 const StudentInfo = () => {
     const { studentId } = useParams();
