@@ -71,18 +71,18 @@ const Header: React.FC<HeaderProps> = () => {
         <>
             <div className={`p-3 ${glassMode ? "glass-accent" : "bg-white"}`}>
                 <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                    <div className={`${glassMode ? 'glass-badge' : ''} w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center`}>
                         <User className="h-5 w-5 text-gray-600" />
                     </div>
-                    <div className="text-sm">
-                        <div className="text-gray-900 font-medium">{user.username}</div>
-                        <div className="text-gray-500 text-xs">{getRoleName()}</div>
+                    <div className="text-sm text-left">
+                        <div className={`${glassMode ? 'text-white' : 'text-gray-900'} font-medium`}>{user.username}</div>
+                        <div className={`${glassMode ? 'text-white/80' : 'text-gray-500'} text-xs`}>{getRoleName()}</div>
                     </div>
                 </div>
             </div>
 
 
-            <div className={`${glassMode ? 'glass-divider-thick' : 'border-b border-gray-100 w-full'}`}></div>
+            <div className={`${glassMode ? 'glass-divider-thick ' : 'border-b border-gray-100 w-full'}`}></div>
 
             <div>
                 <Toggle className="w-full flex items-center px-4 py-2 text-sm transition-colors" label={"Glass Mode"} storageKey={"glass"}/>
@@ -93,7 +93,7 @@ const Header: React.FC<HeaderProps> = () => {
                         setIsUserMenuOpen(false);
                         handleNavigation('/screensaver');
                     }}
-                    className={`w-full flex items-center px-4 py-2 text-sm ${glassMode ? 'glass-button !text-gray-600 mb-2' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                    className={`w-full flex items-center px-4 py-2 text-sm ${glassMode ? 'glass-button text-white/80 mb-2' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
                 >
                     <Monitor className="h-4 w-4 mr-3" />
                     Screensaver
@@ -104,7 +104,7 @@ const Header: React.FC<HeaderProps> = () => {
                         setIsUserMenuOpen(false);
                         logout();
                     }}
-                    className={`w-full flex items-center px-4 py-2 text-sm  ${glassMode ? 'glass-button !text-gray-600' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
+                    className={`w-full flex items-center px-4 py-2 text-sm  ${glassMode ? 'glass-button text-white/80' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
                 >
                     <LogOut className="h-4 w-4 mr-3" />
                     Logout
@@ -140,7 +140,7 @@ const Header: React.FC<HeaderProps> = () => {
                                 <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center">
                                     <span className="text-white font-bold text-sm">EBF</span>
                                 </div>
-                                <span className="text-xl font-semibold text-gray-900">Escola Biblica de Ferias</span>
+                                <span className={`text-xl font-semibold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Escola Biblica de Ferias</span>
                             </button>
                         </div>
 
@@ -151,7 +151,7 @@ const Header: React.FC<HeaderProps> = () => {
                                     <button
                                         key={item.name}
                                         onClick={() => handleNavigation(item.href)}
-                                        className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                                        className={`flex items-center space-x-2 ${glassMode ? 'text-white/80' : ''} px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                             item.current && glassMode
                                                 ? 'glass-accent text-white-900'
                                                 : item.current ? 'bg-gray-200 text-gray-900' : 'text-white-600 hover:text-gray-900 hover: glass-hover-inner'
@@ -171,13 +171,13 @@ const Header: React.FC<HeaderProps> = () => {
                                     className={`flex items-center space-x-3 ${glassMode ? "glass-accent hover:p-2.5 transition-all duration-150 ease-in-out" : "hover:bg-gray-100 transition-colors duration-100 ease-in"} cursor-pointer rounded-lg p-2 `}
                                 >
                                     <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                    <span className="text-gray-700 font-medium text-sm">
+                                    <span className={`${glassMode ? 'glass-badge py-2 px-3' : ''} text-gray-700 font-medium text-sm`}>
                                         {user.username.charAt(0).toUpperCase()}
                                     </span>
                                     </div>
                                     <div className="text-sm text-left">
-                                        <div className="text-gray-900 font-medium">{user.username}</div>
-                                        <div className="text-gray-500 text-xs">{getRoleName()}</div>
+                                        <div className={`${glassMode ? 'text-white' : 'text-gray-900'} font-medium`}>{user.username}</div>
+                                        <div className={`${glassMode ? 'text-white/80' : 'text-gray-500'} text-xs`}>{getRoleName()}</div>
                                     </div>
                                 </button>
                             </div>
@@ -186,7 +186,7 @@ const Header: React.FC<HeaderProps> = () => {
                         <div className="md:hidden">
                             <button
                                 onClick={toggleMobileMenu}
-                                className={`p-2 rounded-md text-gray-600  ${glassMode ? 'glass-button !text-gray-800' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                                className={`p-2 rounded-md   ${glassMode ? 'glass-button text-white' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
                                 aria-label="Abrir menu"
                             >
                                 {isMobileMenuOpen ? (
@@ -208,8 +208,8 @@ const Header: React.FC<HeaderProps> = () => {
                                             onClick={() => handleNavigation(item.href)}
                                             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium transition-colors text-left ${
                                                 item.current && glassMode
-                                                    ? 'glass-accent text-white-900'
-                                                    : item.current ? 'bg-gray-200 text-gray-900' : 'text-white-600 hover:text-gray-900 hover:bg-gray-100'    
+                                                    ? 'glass-accent text-white'
+                                                    : item.current ? 'bg-gray-200 text-gray-900' : `${glassMode ? 'glass-hover-inner text-white/70' : 'text-white-600 hover:text-gray-900 hover:bg-gray-100'}`    
                                             }`}
                                         >
                                             <Icon className="h-5 w-5" />
