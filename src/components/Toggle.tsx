@@ -17,7 +17,7 @@ export const Toggle: React.FC<ToggleProps> = ({
                                                   onChange
                                               }) => {
     const { value, toggle } = useLocalStorageToggle(storageKey);
-    //const { value: glassMode  } = useLocalStorageToggle('glass')
+    const { value: glassMode  } = useLocalStorageToggle('glass')
     const { rerender } = useRenderTrigger();
 
     const handleToggle = () => {
@@ -38,21 +38,38 @@ export const Toggle: React.FC<ToggleProps> = ({
                     {label}
                 </label>
             )}
-            <button
-                id={`toggle-${storageKey}`}
-                type="button"
-                role="switch"
-                aria-checked={value}
-                disabled={disabled}
-                onClick={handleToggle}
-                className={`
+            { glassMode && (
+                <button
+                    id={`toggle-${storageKey}`}
+                    type="button"
+                    role="switch"
+                    aria-checked={value}
+                    disabled={disabled}
+                    onClick={handleToggle}
+                    className={`
+                      glass-toggle
+                      ${value ? 'active' : ''}
+                      ${disabled ? 'opacity-60 cursor-not-allowed' : ''}
+                    `}
+                >
+                </button>
+            )}
+            { !glassMode && (
+                <button
+                    id={`toggle-${storageKey}`}
+                    type="button"
+                    role="switch"
+                    aria-checked={value}
+                    disabled={disabled}
+                    onClick={handleToggle}
+                    className={`
                   relative w-12 h-6 border-none rounded-full cursor-pointer 
                   transition-all duration-200 ease-in-out outline-none p-0
                   focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50
                   ${value ? 'bg-blue-500' : 'bg-gray-300'}
                   ${disabled ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-80'}
                 `}
-                    >
+                >
                 <span
                     className={`
                     absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white
@@ -61,7 +78,9 @@ export const Toggle: React.FC<ToggleProps> = ({
                     ${value ? 'transform translate-x-6' : 'transform translate-x-0'}
                   `}
                 />
-            </button>
+                </button>
+            )}
+
         </div>
     );
 };
