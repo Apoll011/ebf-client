@@ -33,7 +33,7 @@ export const Toggle: React.FC<ToggleProps> = ({
             {label && (
                 <label
                     htmlFor={`toggle-${storageKey}`}
-                    className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                    className={`text-sm font-medium  ${glassMode ? 'text-white' : 'text-gray-700'} cursor-pointer select-none`}
                 >
                     {label}
                 </label>
