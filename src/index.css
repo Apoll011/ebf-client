@@ -39,7 +39,6 @@
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    padding: 20px;
 }
 
 .glass-inner {
@@ -193,7 +192,7 @@
 
 /* Glass Divider */
 .glass-divider {
-    height: 1px;
+    height: 5px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(4px);
     margin: 12px 0;
