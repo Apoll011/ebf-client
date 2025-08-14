@@ -218,7 +218,7 @@ const Header: React.FC<HeaderProps> = () => {
                                     );
                                 })}
 
-                                <div className={`${glassMode ? 'glass-divider' : 'border-b border-gray-100 w-full'} mb-2`}></div>
+                                <div className={`${glassMode ? 'glass-divider-thick ' : 'border-b border-gray-100 w-full'}`}></div>
                                 <MenuOption />
                             </div>
                         </div>
