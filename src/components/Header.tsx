@@ -82,11 +82,11 @@ const Header: React.FC<HeaderProps> = () => {
             </div>
 
 
-            <div className={`${glassMode ? 'glass-divider' : 'border-b border-gray-100 w-full'}`}></div>
+            <div className={`${glassMode ? 'glass-divider-thick' : 'border-b border-gray-100 w-full'}`}></div>
 
             <div>
                 <Toggle className="w-full flex items-center px-4 py-2 text-sm transition-colors" label={"Glass Mode"} storageKey={"glass"}/>
-                <div className={`${glassMode ? 'glass-divider' : 'border-b border-gray-100 w-full'} mb-2`}></div>
+                <div className={`${glassMode ? 'glass-divider-thick' : 'border-b border-gray-100 w-full'} mb-2`}></div>
 
                 <button
                     onClick={() => {
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = () => {
                                         className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                             item.current && glassMode
                                                 ? 'glass-accent text-white-900'
-                                                : item.current ? 'bg-gray-200 text-gray-900' : 'text-white-600 hover:text-gray-900 hover:bg-gray-100'
+                                                : item.current ? 'bg-gray-200 text-gray-900' : 'text-white-600 hover:text-gray-900 hover: glass-hover-inner'
                                         }`}
                                     >
                                         <Icon className="h-4 w-4" />
@@ -226,7 +226,7 @@ const Header: React.FC<HeaderProps> = () => {
                 </div>
             </header>
             {isUserMenuOpen && (
-                <div ref={userMenuRef} className={`fixed right-6 top-20 mt-5 w-56 ${glassMode ? "glass-card" : "bg-white"} border border-gray-200 rounded-lg shadow-lg z-100 p-2`}>
+                <div ref={userMenuRef} className={`fixed right-6 mt-5 w-56 ${glassMode ? "glass-card top-20" : "bg-white top-12"} border border-gray-200 rounded-lg shadow-lg z-100 p-2`}>
                     <MenuOption />
                 </div>
             )}
