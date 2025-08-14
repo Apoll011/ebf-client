@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = () => {
                                         className={`flex items-center space-x-2 ${glassMode ? 'text-white/80' : ''} px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                             item.current && glassMode
                                                 ? 'glass-accent text-white-900'
-                                                : item.current ? 'bg-gray-200 text-gray-900' : 'text-white-600 hover:text-gray-900 hover: glass-hover-inner'
+                                                : item.current ? 'bg-gray-200 text-gray-900' : `${glassMode ? 'glass-hover-inner text-white/70' : 'text-white-600 hover:text-gray-900 hover:bg-gray-100'}`
                                         }`}
                                     >
                                         <Icon className="h-4 w-4" />

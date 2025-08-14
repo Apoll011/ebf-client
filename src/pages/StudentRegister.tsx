@@ -22,7 +22,7 @@ const StudentRegistration = () => {
 
     const showNotification = (message: string, type = 'success') => {
         setNotification({ message, type });
-        setTimeout(() => setNotification(null), 50000);
+        setTimeout(() => setNotification(null), 5000);
     };
 
     const resetForm = () => {
@@ -142,7 +142,7 @@ const StudentRegistration = () => {
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
-                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                                        className={`${glassMode ? 'glass-select' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                     >
                                         <option value="" disabled>
                                             Selecione o gênero

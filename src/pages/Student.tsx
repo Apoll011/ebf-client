@@ -20,11 +20,13 @@ import {
 import { useAuth } from "../hooks/useAuth.tsx";
 import type {AwardPointsRequest, DailyPoints, PointAdjustmentRequest, Student} from "../model/types.ts";
 import {MainLayout} from "../layout/MainLayout.tsx";
+import {useLocalStorageToggle} from "../hooks/useLocalStorageToggle.ts";
 
 const StudentInfo = () => {
     const { studentId } = useParams();
     const navigate = useNavigate();
     const { api } = useAuth();
+    const { value: glassMode  } = useLocalStorageToggle('glass')
 
     const [student, setStudent] = useState<Student | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -93,31 +95,31 @@ const StudentInfo = () => {
     };
 
     const LoadingPlaceholder = () => (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="space-y-6">
-                        <div className="bg-white rounded-lg border border-gray-200">
+                        <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200`}>
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                                 <div className="items-center justify-between">
                                     <div className="flex items-center space-x-4">
-                                        <div className="mb-4 w-12 h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                                        <div className={`mb-4 w-12 h-12 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded-lg`}></div>
                                         <div>
-                                            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-                                            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                                            <div className={`h-6 w-48 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded mb-2`}></div>
+                                            <div className={`h-4 w-32 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                                         </div>
                                     </div>
-                                    <div className="h-16 bg-gray-200 rounded-lg animate-pulse"></div>
+                                    <div className={`h-16 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded-lg`}></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-lg p-6 border border-gray-200">
-                            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4"></div>
+                        <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg p-6 border border-gray-200`}>
+                            <div className={`h-5 w-32 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded  mb-4`}></div>
                             <div className="space-y-3">
-                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
-                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
-                                <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
+                                <div className={`h-12 w-full ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded-lg`}></div>
+                                <div className={`h-12 w-full ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded-lg`}></div>
+                                <div className={`h-12 w-full ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded-lg`}></div>
                             </div>
                         </div>
                     </div>
@@ -125,39 +127,39 @@ const StudentInfo = () => {
                     <div className="lg:col-span-2 space-y-6">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {[...Array(4)].map((_, i) => (
-                                <div key={i} className="bg-white rounded-lg p-4 border border-gray-200">
-                                    <div className="w-8 h-8 bg-gray-200 rounded animate-pulse mb-3"></div>
-                                    <div className="h-6 w-12 bg-gray-200 rounded animate-pulse mb-2"></div>
-                                    <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                                <div key={i} className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg p-4 border border-gray-200`}>
+                                    <div className={`w-8 h-8 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded mb-3`}></div>
+                                    <div className={`h-6 w-12 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded mb-2`}></div>
+                                    <div className={`h-4 w-16 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="bg-white rounded-lg p-6 border border-gray-200">
+                        <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg p-6 border border-gray-200`}>
                             <div className="flex items-center space-x-3 mb-4">
-                                <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
-                                <div className="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+                                <div className={`w-6 h-6 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
+                                <div className={`h-5 w-24 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                             </div>
-                            <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                            <div className={`h-4 w-full ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                         </div>
 
-                        <div className="bg-white rounded-lg p-6 border border-gray-200">
+                        <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg p-6 border border-gray-200`}>
                             <div className="flex items-center space-x-4 mb-6">
-                                <div className="w-12 h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                                <div className={`w-12 h-12 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded-lg`}></div>
                                 <div>
-                                    <div className="h-5 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-                                    <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className={`h-5 w-48 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded mb-2`}></div>
+                                    <div className={`h-4 w-32 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-4">
                                     <div>
-                                        <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-2"></div>
-                                        <div className="h-5 w-full bg-gray-200 rounded animate-pulse"></div>
+                                        <div className={`h-4 w-24 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded mb-2`}></div>
+                                        <div className={`h-5 w-full ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                                     </div>
                                     <div>
-                                        <div className="h-4 w-20 bg-gray-200 rounded animate-pulse mb-2"></div>
-                                        <div className="h-5 w-full bg-gray-200 rounded animate-pulse"></div>
+                                        <div className={`h-4 w-20 ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded mb-2`}></div>
+                                        <div className={`h-5 w-full ${glassMode ? 'glass-skeleton' : 'bg-gray-200 animate-pulse' } rounded`}></div>
                                     </div>
                                 </div>
                             </div>
@@ -169,13 +171,13 @@ const StudentInfo = () => {
     );
 
     const NotFoundPlaceholder = () => (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center">
             <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                <div className={`${glassMode ? 'glass-badge' : ''} w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto`}>
                     <XCircle className="w-8 h-8 text-red-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">Aluno não encontrado</h3>
-                <p className="text-gray-500">ID: {studentId}</p>
+                <h3 className={`text-xl font-semibold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Aluno não encontrado</h3>
+                <p className={glassMode ? "text-white/70" : "text-gray-500"}>ID: {studentId}</p>
             </div>
         </div>
     );
@@ -348,7 +350,7 @@ const StudentInfo = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div className="space-y-6">
-                                <div className="bg-white rounded-lg border border-gray-200">
+                                <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200`}>
                                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                                         <div className="items-center justify-between">
                                             <div className="mb-4 flex items-center space-x-4">
@@ -356,8 +358,8 @@ const StudentInfo = () => {
                                                     {student.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <h1 className="text-2xl font-semibold text-gray-900">{student.name}</h1>
-                                                    <p className="text-gray-600 text-sm">Turma: {student.group}</p>
+                                                    <h1 className={`text-2xl font-semibold ${glassMode ? 'text-white' : 'text-gray-900'}`}>{student.name}</h1>
+                                                    <p className={`${glassMode ? 'text-white/70' : 'text-gray-600'} text-sm`}>Turma: {student.group}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center space-x-3">
@@ -372,26 +374,26 @@ const StudentInfo = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações</h3>
+                                <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
+                                    <h3 className={`text-lg font-semibold mb-4 ${glassMode ? 'text-white' : 'text-gray-900'}`}>Ações</h3>
                                     <div className="space-y-3">
                                         <button
                                             onClick={openPointsModal}
-                                            className="w-full bg-gray-800 text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center justify-center space-x-2"
+                                            className={`${glassMode ? 'glass-button' : 'bg-gray-800'} w-full text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center justify-center space-x-2`}
                                         >
                                             <Award className="w-4 h-4" />
                                             <span>Atribuir Pontos</span>
                                         </button>
                                         <button
                                             onClick={() => setShowAdjustModal(true)}
-                                            className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2"
+                                            className={`${glassMode ? 'glass-button' : 'bg-gray-800'} w-full text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center justify-center space-x-2`}
                                         >
                                             <Settings className="w-4 h-4" />
                                             <span>Ajustar Pontos</span>
                                         </button>
                                         <button
                                             onClick={() => setShowDeleteModal(true)}
-                                            className="w-full bg-red-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-red-400 transition-colors duration-200 flex items-center justify-center space-x-2"
+                                            className={`${glassMode ? 'glass-button glass-button-pink' : 'bg-gray-800'} w-full text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center justify-center space-x-2`}
                                         >
                                             <XCircle className="w-4 h-4" />
                                             <span>Deletar {student.name}</span>
@@ -402,70 +404,70 @@ const StudentInfo = () => {
 
                             <div className="lg:col-span-2 space-y-6">
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                        <Calendar className="w-6 h-6 text-gray-600 mb-2" />
-                                        <div className="text-2xl font-bold text-gray-900">{student.age}</div>
-                                        <div className="text-sm text-gray-600">anos</div>
+                                    <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
+                                        <Calendar className={`w-6 h-6 ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-2`} />
+                                        <div className={`text-2xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>{student.age}</div>
+                                        <div className={`${glassMode ? 'text-white/70' : 'text-gray-600'} text-sm`}>anos</div>
                                     </div>
-                                    <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                        <User className="w-6 h-6 text-gray-600 mb-2" />
-                                        <div className="text-lg font-semibold text-gray-900">{student.gender === 'male' ? 'Masculino' : 'Feminino'}</div>
+                                    <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
+                                        <User className={`w-6 h-6 ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-2`} />
+                                        <div className={`text-2xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>{student.gender === 'male' ? 'Masculino' : 'Feminino'}</div>
                                     </div>
-                                    <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                        <Users className="w-6 h-6 text-gray-600 mb-2" />
-                                        <div className="text-lg font-semibold text-gray-900">{student.group}</div>
-                                        <div className="text-sm text-gray-600">Turma</div>
+                                    <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
+                                        <Users className={`w-6 h-6 ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-2`} />
+                                        <div className={`text-2xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>{student.group}</div>
+                                        <div className={`${glassMode ? 'text-white/70' : 'text-gray-600'} text-sm`}>Turma</div>
                                     </div>
-                                    <div className="bg-white rounded-lg p-6 border border-gray-200">
-                                        <Calendar className="w-6 h-6 text-gray-600 mb-2" />
-                                        <div className="text-sm font-semibold text-gray-900">
+                                    <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
+                                        <Calendar className={`w-6 h-6 ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-2`} />
+                                        <div className={`text-xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>
                                             {new Date(student.created_at).toLocaleDateString('pt-BR')}
                                         </div>
-                                        <div className="text-xs text-gray-600">registro</div>
+                                        <div className={`${glassMode ? 'text-white/70' : 'text-gray-600'} text-sm`}>registro</div>
                                     </div>
                                 </div>
 
                                 {student.address && (
-                                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                                    <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
                                         <div className="flex items-center space-x-3 mb-4">
-                                            <MapPin className="w-6 h-6 text-gray-600" />
-                                            <h3 className="text-lg font-semibold text-gray-900">Endereço</h3>
+                                            <MapPin className={`w-6 h-6 ${glassMode ? 'text-white/70' : 'text-gray-600'}`} />
+                                            <h3 className={`text-xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Endereço</h3>
                                         </div>
-                                        <p className="text-gray-700">{student.address}</p>
+                                        <p className={glassMode ? 'text-white/80' : "text-gray-700"}>{student.address}</p>
                                     </div>
                                 )}
 
-                                <div className="bg-white rounded-lg p-6 border border-gray-200">
+                                <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-lg border border-gray-200 p-6`}>
                                     <div className="flex items-center space-x-4 mb-6">
                                         <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-white">
                                             <User className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-semibold text-gray-900">Informações do Responsável</h3>
-                                            <p className="text-gray-600">Contatos e dados familiares</p>
+                                            <h3 className={`text-xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Informações do Responsável</h3>
+                                            <p className={glassMode ? 'text-white/70' : 'text-gray-600'}>Contatos e dados familiares</p>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="text-sm font-medium text-gray-600 mb-1 block">Nome Completo</label>
-                                                <p className="text-lg font-semibold text-gray-900">{student.parent_name}</p>
+                                                <label className={`text-sm font-medium ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-1 block`}>Nome Completo</label>
+                                                <p className={`text-lg font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>{student.parent_name}</p>
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium text-gray-600 mb-1 flex items-center space-x-2">
+                                                <label className={`text-sm font-medium ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-1 flex item-center space-x-2`}>
                                                     <Phone className="w-4 h-4" />
                                                     <span>Telefone</span>
                                                 </label>
-                                                <p className="text-lg font-semibold text-gray-900">{student.parent_phone}</p>
+                                                <p className={`text-lg font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>{student.parent_phone}</p>
                                             </div>
                                         </div>
 
                                         {student.notes && (
                                             <div className="md:col-span-2">
-                                                <label className="text-sm font-medium text-gray-600 mb-2 block">Observações</label>
-                                                <div className="bg-gray-50 rounded-lg p-4">
-                                                    <p className="text-gray-700 leading-relaxed">{student.notes}</p>
+                                                <label className={`text-sm font-medium ${glassMode ? 'text-white/70' : 'text-gray-600'} mb-2 block`}>Observações</label>
+                                                <div className={`${glassMode ? 'glass-accent' : 'bg-gray-50'} rounded-lg p-4`}>
+                                                    <p className={`${glassMode ? 'text-white/80' : 'text-gray-700'} leading-relaxed`}>{student.notes}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -477,29 +479,29 @@ const StudentInfo = () => {
 
             {showPointsModal && (
                 <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                            <div className={`${glassMode ? 'glass-modal' : 'bg-white'} rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col`}>
                                 <div className="p-6 border-b border-gray-200">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-xl font-semibold text-gray-900">Atribuir Pontos</h3>
+                                        <h3 className={`text-xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Atribuir Pontos</h3>
                                         <button
                                             onClick={() => setShowPointsModal(false)}
-                                            className="text-gray-400 hover:text-gray-600"
+                                            className={glassMode ? 'text-white/80 hover:text-white' : "text-gray-400 hover:text-gray-600"}
                                         >
                                             <XCircle className="w-6 h-6" />
                                         </button>
                                     </div>
 
-                                    <div className={`grid grid-cols-${getWeekDates().length} gap-2 mb-4`}>
+                                    <div className={`grid grid-cols-${getWeekDates().length ? getWeekDates().length : 2} gap-2`}>
                                         {getWeekDates().map((day) => (
                                             <button
                                                 key={day.date}
                                                 onClick={() => changePointsDate(day.date)}
-                                                className={`p-3 rounded-lg text-sm font-medium transition-colors ${
+                                                className={`rounded-lg !px-0 justify-center text-sm font-medium transition-colors ${
                                                     selectedDate === day.date
-                                                        ? 'bg-gray-800 text-white'
+                                                        ? `${glassMode ? 'glass-button-accent' : 'p-3 bg-gray-800'} text-white`
                                                         : day.isToday
-                                                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                                                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                                                            ? glassMode ? 'glass-button-blue' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                                            : glassMode ? 'glass-button' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                                                 }`}
                                             >
                                                 <div className="text-center">
@@ -521,25 +523,25 @@ const StudentInfo = () => {
                                                     onClick={() => togglePoint(category.key)}
                                                     className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
                                                         selectedPoints[category.key]
-                                                            ? `${getColorClass(category.color)} border-current`
-                                                            : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
+                                                            ? `!${getColorClass(category.color)} ${glassMode ? 'glass-accent' : ''} !border-current`
+                                                            : glassMode ? 'glass-card' : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
                                                     }`}
                                                 >
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center space-x-3">
-                                                            <Icon className={`w-5 h-5 ${selectedPoints[category.key] ? 'text-current' : 'text-gray-500'}`} />
+                                                            <Icon className={`w-5 h-5 ${selectedPoints[category.key] ? 'text-current' : glassMode ? 'text-white/60' : 'text-gray-500'}`} />
                                                             <div>
-                                                                <div className="font-semibold">{category.label}</div>
-                                                                <div className="text-sm opacity-70">{category.points} pontos</div>
+                                                                <div className={`font-semibold ${glassMode ? 'text-white' : ''}`}>{category.label}</div>
+                                                                <div className={`text-sm opacity-70 ${glassMode ? 'text-white' : ''}`}>{category.points} pontos</div>
                                                             </div>
                                                         </div>
-                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                                                        <div className={`${glassMode ? 'glass-badge' : ''} w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                                                             selectedPoints[category.key]
                                                                 ? 'bg-current border-current text-white'
                                                                 : 'border-gray-300'
                                                         }`}>
                                                             {selectedPoints[category.key] && (
-                                                                <CheckCircle className="w-4 h-4 text-black" />
+                                                                <CheckCircle className={`w-4 h-4 ${glassMode ? 'text-white' : 'text-black'}`} />
                                                             )}
                                                         </div>
                                                     </div>
@@ -552,20 +554,20 @@ const StudentInfo = () => {
                                 <div className="p-6 border-t border-gray-200 flex gap-3">
                                     <button
                                         onClick={() => setShowPointsModal(false)}
-                                        className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                                        className={`flex-1 py-3 px-4 border border-gray-300 text-gray-700 ${glassMode ? 'glass-button' : 'hover:bg-gray-50'} rounded-lg transition-colors duration-200`}
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         onClick={savePoints}
                                         disabled={isUpdatingPoints}
-                                        className="flex-1 py-3 px-4 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                                        className={`flex-1 py-3 px-4 text-white rounded-lg ${glassMode ? 'glass-button-accent' : 'bg-gray-800 hover:bg-gray-900'} transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2`}
                                     >
                                         {isUpdatingPoints ? (
                                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                         ) : (
                                             <>
-                                                <CheckCircle className="w-4 h-4" />
+                                                <CheckCircle className={glassMode ? "w-8 h-8 mr-2" : "w-4 h-4"} />
                                                 <span>Salvar Pontos</span>
                                             </>
                                         )}
@@ -577,97 +579,93 @@ const StudentInfo = () => {
 
             {showAdjustModal && (
                 <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                            <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-                                <div className="p-6 border-b border-gray-200">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="text-xl font-semibold text-gray-900">Ajustar Pontos</h3>
-                                        <button
-                                            onClick={() => setShowAdjustModal(false)}
-                                            className="text-gray-400 hover:text-gray-600"
-                                        >
-                                            <XCircle className="w-6 h-6" />
-                                        </button>
-                                    </div>
-                                    <p className="text-gray-600 text-sm mt-1">Adicione ou remova pontos com justificativa</p>
-                                </div>
-
-                                <div className="p-6 space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Quantidade de Pontos</label>
-                                        <input
-                                            type="number"
-                                            value={adjustmentData.amount}
-                                            onChange={(e) => setAdjustmentData(prev => ({ ...prev, amount: parseInt(e.target.value) || 0 }))}
-                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                                            placeholder="Use números negativos para remover"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Data</label>
-                                        <input
-                                            type="date"
-                                            value={adjustmentData.date_adjust}
-                                            onChange={(e) => setAdjustmentData(prev => ({ ...prev, date: e.target.value }))}
-                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Motivo do Ajuste</label>
-                                        <textarea
-                                            value={adjustmentData.reason}
-                                            onChange={(e) => setAdjustmentData(prev => ({ ...prev, reason: e.target.value }))}
-                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent resize-none"
-                                            rows={3}
-                                            placeholder="Descreva o motivo do ajuste..."
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="p-6 border-t border-gray-200 flex gap-3">
-                                    <button
-                                        onClick={() => {
-                                            setShowAdjustModal(false);
-                                            setAdjustmentData({ amount: 0, reason: '', date_adjust: new Date().toISOString().split('T')[0] });
-                                        }}
-                                        className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        onClick={adjustPoints}
-                                        disabled={!adjustmentData.reason.trim() || adjustmentData.amount === 0 || isUpdatingPoints}
-                                        className="flex-1 py-3 px-4 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                                    >
-                                        {isUpdatingPoints ? (
-                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Settings className="w-4 h-4" />
-                                                <span>Ajustar</span>
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-            )}
-
-            {showDeleteModal && (
-                <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+                    <div className={`${glassMode ? 'glass-modal' : 'bg-white'} rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col`}>
                         <div className="p-6 border-b border-gray-200">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-xl font-semibold text-gray-900">Queres deletar {student.name}</h3>
+                                <h3 className={`text-xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Ajustar Pontos</h3>
                                 <button
-                                    onClick={() => setShowDeleteModal(false)}
-                                    className="text-gray-400 hover:text-gray-600"
+                                    onClick={() => setShowAdjustModal(false)}
+                                    className={glassMode ? 'text-white/80 hover:text-white' : "text-gray-400 hover:text-gray-600"}
                                 >
                                     <XCircle className="w-6 h-6" />
                                 </button>
                             </div>
-                            <p className="text-gray-600 text-sm mt-1">Esta ação não pode ser desfeita</p>
+                            <p className={`${glassMode ? 'text-white/70':'text-gray-600'} text-sm mt-1`}>Adicione ou remova pontos com justificativa</p>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>Quantidade de Pontos</label>
+                                <input
+                                    type="number"
+                                    value={adjustmentData.amount}
+                                    onChange={(e) => setAdjustmentData(prev => ({ ...prev, amount: parseInt(e.target.value) || 0 }))}
+                                    className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent`}
+                                    placeholder="Use números negativos para remover"
+                                />
+                            </div>
+                            <div>
+                                <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>Data</label>
+                                <input
+                                    type="date"
+                                    value={adjustmentData.date_adjust}
+                                    onChange={(e) => setAdjustmentData(prev => ({ ...prev, date: e.target.value }))}
+                                    className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent`}
+                                />
+                            </div>
+                            <div>
+                                <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>Motivo do Ajuste</label>
+                                <textarea
+                                    value={adjustmentData.reason}
+                                    onChange={(e) => setAdjustmentData(prev => ({ ...prev, reason: e.target.value }))}
+                                    className={`${glassMode ? 'glass-textarea' : ''} w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent`}
+                                    rows={3}
+                                    placeholder="Descreva o motivo do ajuste..."
+                                />
+                            </div>
+                        </div>
+                        <div className="p-6 border-t border-gray-200 flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowAdjustModal(false);
+                                    setAdjustmentData({ amount: 0, reason: '', date_adjust: new Date().toISOString().split('T')[0] });
+                                }}
+                                className={`flex-1 py-3 px-4 border border-gray-300 text-gray-700 ${glassMode ? 'glass-button' : 'hover:bg-gray-50'} rounded-lg transition-colors duration-200`}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={adjustPoints}
+                                disabled={!adjustmentData.reason.trim() || adjustmentData.amount === 0 || isUpdatingPoints}
+                                className={`flex-1 py-3 px-4 text-white rounded-lg ${glassMode ? 'glass-button-accent' : 'bg-gray-800 hover:bg-gray-900'} transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2`}
+                            >
+                                {isUpdatingPoints ? (
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <Settings className="w-4 h-4" />
+                                        <span>Ajustar</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-opacity-20 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className={`${glassMode ? 'glass-modal' : 'bg-white'} rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col`}>
+                        <div className="p-6 border-b border-gray-200">
+                            <div className="flex items-center justify-between">
+                                <h3 className={`text-xl font-bold ${glassMode ? 'text-white' : 'text-gray-900'}`}>Queres deletar {student.name}</h3>
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className={glassMode ? 'text-white/80 hover:text-white' : "text-gray-400 hover:text-gray-600"}
+                                >
+                                    <XCircle className="w-6 h-6" />
+                                </button>
+                            </div>
+                            <p className={`${glassMode ? 'text-white/70':'text-gray-600'} text-sm mt-1`}>Esta ação não pode ser desfeita</p>
                         </div>
 
                         <div className="p-6 border-t border-gray-200 flex gap-3">
@@ -675,14 +673,14 @@ const StudentInfo = () => {
                                 onClick={() => {
                                     setShowDeleteModal(false);
                                 }}
-                                className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                                className={`flex-1 py-3 px-4 border border-gray-300 text-gray-700 ${glassMode ? 'glass-button' : 'hover:bg-gray-50'} rounded-lg transition-colors duration-200`}
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={deleteStudent}
                                 disabled={isDeleting}
-                                className="flex-1 py-3 px-4 bg-orange-600 text-white rounded-lg hover:bg-orange-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                                className={`flex-1 py-3 px-4 text-white rounded-lg ${glassMode ? 'glass-button-accent glass-button-pink' : 'bg-gray-800 hover:bg-gray-900'} transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2`}
                             >
                                 {isDeleting ? (
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -700,33 +698,33 @@ const StudentInfo = () => {
             )}
 
             {notification && (
-                <div className={`fixed top-6 right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
-                            notification.type === 'error'
-                                ? 'bg-red-50 border-red-200 text-red-800'
-                                : 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                        }`}>
+                <div className={`fixed ${glassMode ? 'top-25' : 'top-20'} right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
+                    glassMode ? 'glass-accent' : notification.type === 'error'
+                        ? 'bg-red-50 border-red-200 text-red-800'
+                        : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                }`}>
                     <div className="flex items-center space-x-3">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                    notification.type === 'error'
-                                        ? 'bg-red-100 text-red-600'
-                                        : 'bg-emerald-100 text-emerald-600'
-                                }`}>
-                                    {notification.type === 'error' ? (
-                                        <XCircle className="w-4 h-4" />
-                                    ) : (
-                                        <CheckCircle className="w-4 h-4" />
-                                    )}
-                                </div>
-                                <div className="flex-1">
-                                    <p className="font-medium text-sm">{notification.message}</p>
-                                </div>
-                                <button
-                                    onClick={() => setNotification(null)}
-                                    className="text-current hover:bg-black/5 rounded-lg p-1 transition-colors"
-                                >
-                                    <XCircle className="w-4 h-4" />
-                                </button>
-                            </div>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${glassMode ? 'glass-badge' : ''} ${
+                            notification.type === 'error'
+                                ? '!bg-red-100 !text-red-600'
+                                : '!bg-emerald-100 !text-emerald-600'
+                        }`}>
+                            {notification.type === 'error' ? (
+                                <XCircle className="w-4 h-4" />
+                            ) : (
+                                <CheckCircle className="w-4 h-4" />
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            <p className={`font-medium text-sm ${glassMode ? 'text-white/80' : ''}`}>{notification.message}</p>
+                        </div>
+                        <button
+                            onClick={() => setNotification(null)}
+                            className={`text-current hover:bg-black/5 rounded-lg p-1 transition-colors ${glassMode ? 'text-white/80' : ''}`}
+                        >
+                            <XCircle className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
             )}
         </MainLayout>
