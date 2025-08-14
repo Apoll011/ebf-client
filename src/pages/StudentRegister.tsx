@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth.tsx";
 import type {CreateStudentRequest, Gender} from "../model/types.ts";
 import {MainLayout} from "../layout/MainLayout.tsx";
 import {CheckCircle, XCircle} from "lucide-react";
+import {useLocalStorageToggle} from "../hooks/useLocalStorageToggle.ts";
 
 const StudentRegistration = () => {
     const { api } = useAuth();
@@ -17,10 +18,11 @@ const StudentRegistration = () => {
         address: '',
         notes: ''
     });
+    const { value: glassMode  } = useLocalStorageToggle('glass')
 
     const showNotification = (message: string, type = 'success') => {
         setNotification({ message, type });
-        setTimeout(() => setNotification(null), 5000);
+        setTimeout(() => setNotification(null), 50000);
     };
 
     const resetForm = () => {
@@ -91,18 +93,17 @@ const StudentRegistration = () => {
 
     return (
         <MainLayout>
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="mb-8">
-                        <h1 className="text-3xl font-light text-gray-900 mb-2">Registro de Alunos</h1>
-                        <p className="text-gray-600">Adicione novos alunos ao sistema rapidamente</p>
+                        <h1 className={`text-3xl font-light ${glassMode ? 'text-white' : 'text-gray-900'} mb-2`}>Registro de Alunos</h1>
+                        <p className={glassMode ? 'text-white/80' : 'text-gray-600'}>Adicione novos alunos ao sistema rapidamente</p>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className={`${glassMode ? 'glass-card' : 'bg-white'} rounded-2xl shadow-sm border border-gray-100 overflow-hidden`}>
                         <div className="p-8 space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Name */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Nome Completo *
                                     </label>
                                     <input
@@ -110,14 +111,14 @@ const StudentRegistration = () => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                         placeholder="Digite o nome completo do aluno"
                                     />
                                 </div>
 
                                 {/* Age */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Idade *
                                     </label>
                                     <input
@@ -127,21 +128,21 @@ const StudentRegistration = () => {
                                         onChange={handleInputChange}
                                         min="1"
                                         max="18"
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                         placeholder="Idade"
                                     />
                                 </div>
 
                                 {/* Gender */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Gênero *
                                     </label>
                                     <select
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                     >
                                         <option value="" disabled>
                                             Selecione o gênero
@@ -153,7 +154,7 @@ const StudentRegistration = () => {
 
                                 {/* Parent Name */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Nome do Responsável *
                                     </label>
                                     <input
@@ -161,14 +162,14 @@ const StudentRegistration = () => {
                                         name="parent_name"
                                         value={formData.parent_name}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                         placeholder="Nome do pai/mãe ou responsável"
                                     />
                                 </div>
 
                                 {/* Phone */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Telefone do Responsável *
                                     </label>
                                     <input
@@ -177,14 +178,14 @@ const StudentRegistration = () => {
                                         value={formData.parent_phone}
                                         onChange={handlePhoneChange}
                                         maxLength={9}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                         placeholder="Telefone"
                                     />
                                 </div>
 
                                 {/* Address */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Endereço
                                     </label>
                                     <input
@@ -192,14 +193,14 @@ const StudentRegistration = () => {
                                         name="address"
                                         value={formData.address}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        className={`${glassMode ? 'glass-input' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                         placeholder="Endereço completo (opcional)"
                                     />
                                 </div>
 
                                 {/* Notes */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className={`block text-sm font-medium ${glassMode ? 'text-white/80' : 'text-gray-700'} mb-2`}>
                                         Observações
                                     </label>
                                     <textarea
@@ -207,13 +208,13 @@ const StudentRegistration = () => {
                                         value={formData.notes}
                                         onChange={handleInputChange}
                                         rows={3}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                                        className={`${glassMode ? 'glass-textarea' : ''} w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                         placeholder="Informações adicionais sobre o aluno (opcional)"
                                     />
                                 </div>
                             </div>
 
-                            <button type="submit"  onClick={handleSubmit}  disabled={isLoading}  className="relative px-8 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-[100%]">
+                            <button type="submit"  onClick={handleSubmit}  disabled={isLoading}  className={`${glassMode ? 'glass-button-accent' : 'bg-gray-800 hover:bg-gray-900'} relative px-8 py-3  text-white rounded-xl focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-[100%]`}>
                                     {isLoading ? (
                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     ) : (
@@ -225,16 +226,16 @@ const StudentRegistration = () => {
                 </div>
 
             {notification && (
-                <div className={`fixed top-6 right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
-                    notification.type === 'error'
+                <div className={`fixed ${glassMode ? 'top-25' : 'top-20'} right-6 z-50 p-4 rounded-lg shadow-lg border transition-all duration-500 transform ${
+                    glassMode ? 'glass-accent' : notification.type === 'error'
                         ? 'bg-red-50 border-red-200 text-red-800'
                         : 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 }`}>
                     <div className="flex items-center space-x-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${glassMode ? 'glass-badge' : ''} ${
                             notification.type === 'error'
-                                ? 'bg-red-100 text-red-600'
-                                : 'bg-emerald-100 text-emerald-600'
+                                ? '!bg-red-100 !text-red-600'
+                                : '!bg-emerald-100 !text-emerald-600'
                         }`}>
                             {notification.type === 'error' ? (
                                 <XCircle className="w-4 h-4" />
@@ -243,11 +244,11 @@ const StudentRegistration = () => {
                             )}
                         </div>
                         <div className="flex-1">
-                            <p className="font-medium text-sm">{notification.message}</p>
+                            <p className={`font-medium text-sm ${glassMode ? 'text-white/80' : ''}`}>{notification.message}</p>
                         </div>
                         <button
                             onClick={() => setNotification(null)}
-                            className="text-current hover:bg-black/5 rounded-lg p-1 transition-colors"
+                            className={`text-current hover:bg-black/5 rounded-lg p-1 transition-colors ${glassMode ? 'text-white/80' : ''}`}
                         >
                             <XCircle className="w-4 h-4" />
                         </button>
