@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { FlagIcon } from 'lucide-react';
+import {useLocalStorageToggle} from "../hooks/useLocalStorageToggle.ts";
 export function Error404() {
+    const { value: glassMode  } = useLocalStorageToggle('glass')
     const navigate = useNavigate();
     return (
         <div
@@ -11,7 +13,7 @@ export function Error404() {
                 </h1>
                 <button
                     onClick={() => navigate('/')}
-                    className={`px-10 mt-4 cursor-pointer items-center space-x-3 py-2 rounded-md text-base font-medium transition-colors text-left text-white bg-gray-800 hover:bg-gray-900`}
+                    className={`px-10 mt-4 cursor-pointer items-center space-x-3 py-2 rounded-md text-base font-medium transition-colors text-left text-white ${glassMode ? 'glass-button-accent' : 'bg-gray-800 hover:bg-gray-900'}`}
                 >
                     <span>Página Inicial</span>
                 </button>
