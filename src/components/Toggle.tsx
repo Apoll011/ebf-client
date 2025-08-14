@@ -1,4 +1,5 @@
 import {useLocalStorageToggle} from "../hooks/useLocalStorageToggle";
+import {useRenderTrigger} from "../hooks/useRenderTrigger.tsx";
 
 interface ToggleProps {
     storageKey: string;
@@ -17,10 +18,12 @@ export const Toggle: React.FC<ToggleProps> = ({
                                               }) => {
     const { value, toggle } = useLocalStorageToggle(storageKey);
     //const { value: glassMode  } = useLocalStorageToggle('glass')
+    const { rerender } = useRenderTrigger();
 
     const handleToggle = () => {
         if (!disabled) {
             toggle();
+            rerender();
             onChange?.(value);
         }
     };

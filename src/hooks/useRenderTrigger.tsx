@@ -1,9 +1,9 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
   useCallback,
-  ReactNode,
+    type ReactNode,
 } from "react";
 
 interface RenderTriggerContextType {

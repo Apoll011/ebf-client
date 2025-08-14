@@ -165,7 +165,7 @@ const Header: React.FC<HeaderProps> = () => {
                         </nav>
 
                         <div className="hidden md:flex items-center space-x-4">
-                            <div className="relative" ref={userMenuRef}>
+                            <div className="relative">
                                 <button
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                                     className={`flex items-center space-x-3 ${glassMode ? "glass-accent hover:p-2.5 transition-all duration-150 ease-in-out" : "hover:bg-gray-100 transition-colors duration-100 ease-in"} cursor-pointer rounded-lg p-2 `}
@@ -226,7 +226,7 @@ const Header: React.FC<HeaderProps> = () => {
                 </div>
             </header>
             {isUserMenuOpen && (
-                <div className={`fixed right-6 top-20 mt-5 w-56 ${glassMode ? "glass-card" : "bg-white"} border border-gray-200 rounded-lg shadow-lg z-100 p-2`}>
+                <div ref={userMenuRef} className={`fixed right-6 top-20 mt-5 w-56 ${glassMode ? "glass-card" : "bg-white"} border border-gray-200 rounded-lg shadow-lg z-100 p-2`}>
                     <MenuOption />
                 </div>
             )}
