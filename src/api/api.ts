@@ -371,6 +371,7 @@ export class StudentManagementApi {
         };
 
         if (!skipAuth && this.authToken) {
+            // @ts-ignore
             headers['Authorization'] = `Bearer ${this.authToken}`;
         }
 

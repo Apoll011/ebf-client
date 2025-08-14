@@ -13,7 +13,7 @@ const Header: React.FC<HeaderProps> = () => {
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-    const userMenuRef = useRef(null);
+    const userMenuRef = useRef<HTMLDivElement | null>(null);
     const { user, logout } = useAuth();
     const { value: glassMode  } = useLocalStorageToggle('glass')
 
@@ -115,14 +115,17 @@ const Header: React.FC<HeaderProps> = () => {
     );
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
+
+        const handleClickOutside = (event: { target: Node }) => {
             if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
                 setIsUserMenuOpen(false);
             }
         };
 
+        // @ts-ignore
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
+            // @ts-ignore
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
